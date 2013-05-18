@@ -1,34 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/scala-2.9.2/classes" path="src/main/scala"/>
-	<classpathentry kind="src" output="target/scala-2.9.2/classes" path="src/main/java"/>
-	<classpathentry kind="src" output="target/scala-2.9.2/test-classes" path="src/test/scala"/>
-	<classpathentry kind="src" output="target/scala-2.9.2/test-classes" path="src/test/java"/>
-	<classpathentry kind="lib" path="lib/libopencv_calib3d.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libtbb.so"/>
-	<classpathentry kind="lib" path="lib/javacv.jar"/>
-	<classpathentry kind="lib" path="lib/opencv-2.4.5-linux-x86_64.jar"/>
-	<classpathentry kind="lib" path="lib/javacpp.jar"/>
-	<classpathentry kind="lib" path="lib/ffmpeg-1.2-linux-x86_64.jar"/>
-	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/javacv-linux-x86_64.jar"/>
-	<classpathentry kind="lib" path="lib/libopencv_contrib.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_core.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_features2d.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_flann.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_gpu.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_highgui.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_imgproc.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_legacy.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_ml.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_nonfree.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_objdetect.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_photo.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_stitching.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_superres.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_ts.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_video.so.2.4"/>
-	<classpathentry kind="lib" path="lib/libopencv_videostab.so.2.4"/>
-	<classpathentry kind="output" path="bin"/>
+  <classpathentry output="target/scala-2.9.2/classes" path="src/main/scala" kind="src"></classpathentry>
+  <classpathentry output="target/scala-2.9.2/classes" path="src/main/java" kind="src"></classpathentry>
+  <classpathentry output="target/scala-2.9.2/test-classes" path="src/test/scala" kind="src"></classpathentry>
+  <classpathentry output="target/scala-2.9.2/test-classes" path="src/test/java" kind="src"></classpathentry>
+  <classpathentry path="./lib/javacv-linux-x86_64.jar" kind="lib"></classpathentry>
+  <classpathentry path="./lib/libtbb.so" kind="lib"></classpathentry>
+  <classpathentry path="./lib/javacv.jar" kind="lib"></classpathentry>
+  <classpathentry path="./lib/opencv-2.4.5-linux-x86_64.jar" kind="lib"></classpathentry>
+  <classpathentry path="./lib/javacpp.jar" kind="lib"></classpathentry>
+  <classpathentry path="./lib/ffmpeg-1.2-linux-x86_64.jar" kind="lib"></classpathentry>
+  <classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"></classpathentry>
+  <classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"></classpathentry>
+  <classpathentry path="bin" kind="output"></classpathentry>
 </classpath>
