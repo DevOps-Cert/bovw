@@ -7,6 +7,9 @@ import java.io.File
 import com.googlecode.javacv.CanvasFrame
 import com.googlecode.javacv.cpp.opencv_nonfree.SIFT
 import com.googlecode.javacv.cpp.opencv_imgproc._
+import com.googlecode.javacv.CanvasFrame
+import com.googlecode.javacv.cpp.opencv_highgui._
+import javax.swing.JFrame._
 //import com.googlecode.javacv.cpp.opencv_core.Core
 
 object Hello{
@@ -27,7 +30,11 @@ object Hello{
     // Draw keyPoints
     val featureImage = cvCreateImage(cvGetSize(image), image.depth(), 3)
     drawKeypoints(image, keyPoints, featureImage, CvScalar.WHITE, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
-
+    val canvas = new CanvasFrame("SIFT Features", 1)
+    // Request closing of the application when the image window is closed
+    canvas.setDefaultCloseOperation(EXIT_ON_CLOSE)
+    // Show image on window
+    canvas.showImage(featureImage)
  
   }
 }
