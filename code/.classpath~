@@ -12,5 +12,4 @@
   <classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"></classpathentry>
   <classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"></classpathentry>
   <classpathentry path="bin" kind="output"></classpathentry>
-  <classpathentry path="./lib/libopencv_calib3d.so.2.4" kind="lib"></classpathentry>
 </classpath>
