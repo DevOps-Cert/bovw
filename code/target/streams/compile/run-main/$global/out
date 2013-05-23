@@ -2,13 +2,12 @@
 [0m[[0mdebug[0m] [0mStarting sandboxed run...[0m
 [0m[[0mdebug[0m] [0mWaiting for threads to exit or System.exit to be called.[0m
 [0m[[0mdebug[0m] [0m  Classpath:[0m
-[0m[[0mdebug[0m] [0m	/home/yang/bovw/code/target/scala-2.9.2/classes[0m
-[0m[[0mdebug[0m] [0m	/home/yang/bovw/code/lib/javacv-linux-x86_64.jar[0m
-[0m[[0mdebug[0m] [0m	/home/yang/bovw/code/lib/javacv.jar[0m
-[0m[[0mdebug[0m] [0m	/home/yang/bovw/code/lib/opencv-2.4.5-linux-x86_64.jar[0m
-[0m[[0mdebug[0m] [0m	/home/yang/bovw/code/lib/javacpp.jar[0m
-[0m[[0mdebug[0m] [0m	/home/yang/bovw/code/lib/ffmpeg-1.2-linux-x86_64.jar[0m
-[0m[[0mdebug[0m] [0m	/home/yang/.sbt/boot/scala-2.9.2/lib/scala-library.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/bovw/code/target/scala-2.9.2/classes[0m
+[0m[[0mdebug[0m] [0m	/home/yp/bovw/code/lib/ffmpeg-1.2-linux-x86_64.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/bovw/code/lib/javacpp.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/bovw/code/lib/javacv.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/bovw/code/lib/javacv-linux-x86_64.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.sbt/boot/scala-2.9.2/lib/scala-library.jar[0m
 [0m[[0mdebug[0m] [0mWaiting for thread run-main to exit[0m
 [0m[[0mdebug[0m] [0m	Thread run-main exited.[0m
 [0m[[0mdebug[0m] [0mWaiting for thread AWT-EventQueue-0 to exit[0m
