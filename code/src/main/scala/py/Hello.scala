@@ -30,11 +30,11 @@ object Hello{
     // Draw keyPoints
     val featureImage = cvCreateImage(cvGetSize(image), image.depth(), 3)
     drawKeypoints(image, keyPoints, featureImage, CvScalar.WHITE, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
-    val canvas = new CanvasFrame("SIFT Features", 1)
+    // val canvas = new CanvasFrame("SIFT Features", 1)
     // Request closing of the application when the image window is closed
-    canvas.setDefaultCloseOperation(EXIT_ON_CLOSE)
+    // canvas.setDefaultCloseOperation(EXIT_ON_CLOSE)
     // Show image on window
-    canvas.showImage(featureImage)
+    // canvas.showImage(featureImage)
  
   }
 }
