@@ -11,8 +11,8 @@
 [0m[[0mdebug[0m] [0m	/home/yang/bovw/code/lib/ffmpeg-1.2-linux-x86_64.jar[0m
 [0m[[0mdebug[0m] [0m	/home/yang/.sbt/boot/scala-2.9.2/lib/scala-library.jar[0m
 [0m[[0mdebug[0m] [0mWaiting for thread run-main to exit[0m
-[0m[[31merror[0m] [0m(run-main) java.lang.UnsatisfiedLinkError: /tmp/javacpp520003118022/libjniopencv_nonfree.so: libopencv_calib3d.so.2.4: cannot open shared object file: No such file or directory[0m
-java.lang.UnsatisfiedLinkError: /tmp/javacpp520003118022/libjniopencv_nonfree.so: libopencv_calib3d.so.2.4: cannot open shared object file: No such file or directory
+[0m[[31merror[0m] [0m(run-main) java.lang.UnsatisfiedLinkError: /tmp/javacpp922310784623/libjniopencv_nonfree.so: libopencv_calib3d.so.2.4: cannot open shared object file: No such file or directory[0m
+java.lang.UnsatisfiedLinkError: /tmp/javacpp922310784623/libjniopencv_nonfree.so: libopencv_calib3d.so.2.4: cannot open shared object file: No such file or directory
 	at java.lang.ClassLoader$NativeLibrary.load(Native Method)
 	at java.lang.ClassLoader.loadLibrary1(ClassLoader.java:1939)
 	at java.lang.ClassLoader.loadLibrary0(ClassLoader.java:1864)
