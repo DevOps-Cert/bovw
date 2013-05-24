@@ -16,7 +16,23 @@ import java.io.PrintWriter
 
 object Hello{
   def main(args:Array[String]){
-    loadFeatures("resources/images")
+    // loadFeatures("resources/images")
+    
+    // test
+    
+    val image = cvLoadImage("boldt.jpg")   
+    val keyPoints = new KeyPoint()
+    val sift = new SIFT(0, 3, 0.03, 10, 1.6)
+    sift.detect(image, null, keyPoints)
+    //val featureImage = cvCreateImage(cvGetSize(image), image.depth(), 3)
+    //drawKeypoints(image, keyPoints, featureImage, CvScalar.WHITE, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
+    //show(featureImage, "SIFT Features")
+    val points = toArray(keyPoints)
+    // pt i.e. position(x, y)
+    println("postion, angle, octave, response, size, capacity, limit")
+    points.foreach(p => {
+        println(p.pt() + ":" + p.angle() + ":" + p.octave() + p.response() + ":" + p.size() + ":" + p.capacity() + ":" + p.limit())
+    })
   }
   
   def extractKeyPoints(filename : String) : KeyPoint = {
@@ -32,7 +48,13 @@ object Hello{
     val sift = new SIFT(nFeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma)
     sift.detect(image, null, keyPoints)
     
-    println(keyPoints)
+    val points = toArray(keyPoints)
+    
+    points.foreach(p => {
+      println(p.pt() + ":" + p.pt_x() + ":" + p.pt_y())
+    })
+    
+    //println(toArray(keyPoints))
     
     keyPoints
     
