@@ -13,69 +13,56 @@ import com.googlecode.javacv.cpp.opencv_highgui._
 import javax.swing.JFrame._
 import OpenCVUtils._
 import java.io.PrintWriter
+import java.util.ArrayList
 //import com.googlecode.javacv.cpp.opencv_core.Core
 
 object Hello{
+  
+  // parameters used to detect SIFT key points
+  
+  val nFeatures = 0
+  val nOctaveLayers = 3
+  val contrastThreshold = 0.03
+  val edgeThreshold = 10
+  val sigma = 1.6
+  val sift = new SIFT(nFeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma)
+  val des = sift.getDescriptorExtractor()
+  // file writer
+  val pw = new PrintWriter(new File("resources/features.txt"))
+    
   def main(args:Array[String]){
-    // loadFeatures("resources/images")
+    loadFeatures("resources/images")
     // test
+    /*
     val image = cvLoadImageM("boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE)
     val keyPoints = new KeyPoint()
     val sift = new SIFT(0, 3, 0.03, 10, 1.6)
     sift.detect(image, null, keyPoints)
-    val des = sift.getDescriptorExtractor()
+    
     val cv_mat = new CvMat(null)
     des.compute(image, keyPoints, cv_mat)
-    val pw = new PrintWriter(new File("resources/features.txt"))
-    println(cv_mat.cols())
     
-/*    for(i <- 0 until cv_mat.cols())
-    {
-      val da = Array[Double]()
-      cv_mat.get(i, da)
-      for (j <- 0 until 512)
-       pw.println(cv_mat.get(i, j, 0))
-      //pw.println(da.mkString(" "))
-      //cv_mat.get(i)
-      pw.flush()
-    }*/
-    //cv_mat.ro
+    println(cv_mat.cols())
+    println(cv_mat.rows())
+    println(cv_mat.channels())
+    // 551 * 128 matrix
     val points = toArray(keyPoints) // used to get all the positions and sizes of the key points
     println(points.size)
     // pt i.e. position(x, y)
     // println("postion, angle, octave, response, size, capacity, limit")
-    pw.close()
+    pw.close()*/
   }
   
-  def extractKeyPoints(filename : String) : KeyPoint = {
+  def extractKeyPoints(filename : String) {
     // load image
-    val image = cvLoadImage(filename)
-    // Detect SIFT features
-    val keyPoints = new KeyPoint()
-    val nFeatures = 0
-    val nOctaveLayers = 3
-    val contrastThreshold = 0.03
-    val edgeThreshold = 10
-    val sigma = 1.6
-    val sift = new SIFT(nFeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma)
+    val image = cvLoadImageM(filename, CV_LOAD_IMAGE_GRAYSCALE)
+    val keyPoints = new KeyPoint()  
     sift.detect(image, null, keyPoints)
-    
     val points = toArray(keyPoints)
-    
-    points.foreach(p => {
-      println(p.pt() + ":" + p.pt_x() + ":" + p.pt_y())
-    })
-    
-    //println(toArray(keyPoints))
-    
-    keyPoints
-    
-    // keyPoints.
-    // Draw keyPoints
-    // val image = loadAndShowOrExit(new File("boldt.jpg"))    
-    // val featureImage = cvCreateImage(cvGetSize(image), image.depth(), 3)
-    // drawKeypoints(image, keyPoints, featureImage, CvScalar.WHITE, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
-    // show(featureImage, "SIFT Features")
+    val cv_mat = new CvMat(null)
+    des.compute(image, keyPoints, cv_mat)
+    writeToFile(cv_mat)
+    println(filename + ":" + cv_mat.rows())
   }
   
   def loadFeatures(dir : String)
@@ -87,10 +74,20 @@ object Hello{
       println(f.getName())
       extractKeyPoints(f.getAbsolutePath())
     })
-  
-  
+    pw.close()
   }
   
+  def writeToFile(mat:CvMat)
+  {
+	for(i <- 0 until mat.rows())
+    {
+      val row = new ArrayList[Double]
+      for(j<- 0 until mat.cols())
+        row.add(mat.get(i, j))
+       pw.println(row.toArray().mkString(" "))
+       pw.flush()
+    }
+  }
   
 }
 
