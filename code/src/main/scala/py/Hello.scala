@@ -32,6 +32,7 @@ object Hello{
     
   def main(args:Array[String]){
     loadFeatures("resources/images")
+    println("end")
     // test
     /*
     val image = cvLoadImageM("boldt.jpg", CV_LOAD_IMAGE_GRAYSCALE)
