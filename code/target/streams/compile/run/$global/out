@@ -1,102 +1,50 @@
-[0m[[0minfo[0m] [0mRunning py.Hello [0m
+[0m[[0minfo[0m] [0mRunning py.Extractor [0m
 [0m[[0mdebug[0m] [0mStarting sandboxed run...[0m
 [0m[[0mdebug[0m] [0mWaiting for threads to exit or System.exit to be called.[0m
 [0m[[0mdebug[0m] [0m  Classpath:[0m
 [0m[[0mdebug[0m] [0m	/home/yp/bovw/code/target/scala-2.9.2/classes[0m
-[0m[[0mdebug[0m] [0m	/home/yp/bovw/code/lib/opencv-2.4.5-linux-x86_64.jar[0m
 [0m[[0mdebug[0m] [0m	/home/yp/bovw/code/lib/ffmpeg-1.2-linux-x86_64.jar[0m
 [0m[[0mdebug[0m] [0m	/home/yp/bovw/code/lib/javacpp.jar[0m
 [0m[[0mdebug[0m] [0m	/home/yp/bovw/code/lib/javacv.jar[0m
 [0m[[0mdebug[0m] [0m	/home/yp/bovw/code/lib/javacv-linux-x86_64.jar[0m
 [0m[[0mdebug[0m] [0m	/home/yp/.sbt/boot/scala-2.9.2/lib/scala-library.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/nz.ac.waikato.cms.weka/weka-stable/jars/weka-stable-3.6.6.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/net.sf.squirrel-sql.thirdparty-non-maven/java-cup/jars/java-cup-0.11a.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.apache.mahout/mahout-core/jars/mahout-core-0.7.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.apache.mahout/mahout-math/jars/mahout-math-0.7.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.apache.commons/commons-math/jars/commons-math-2.2.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.uncommons.maths/uncommons-maths/jars/uncommons-maths-1.2.2.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/jfree/jcommon/jars/jcommon-1.0.12.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/com.google.guava/guava/jars/guava-r09.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.6.1.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.codehaus.jackson/jackson-core-asl/jars/jackson-core-asl-1.8.2.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.codehaus.jackson/jackson-mapper-asl/jars/jackson-mapper-asl-1.8.2.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/commons-lang/commons-lang/jars/commons-lang-2.6.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/com.thoughtworks.xstream/xstream/jars/xstream-1.3.1.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/xpp3/xpp3_min/jars/xpp3_min-1.1.4c.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.apache.lucene/lucene-core/jars/lucene-core-3.6.0.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.apache.lucene/lucene-analyzers/jars/lucene-analyzers-3.6.0.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.apache.mahout.commons/commons-cli/jars/commons-cli-2.0-mahout.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.apache.hadoop/hadoop-core/jars/hadoop-core-0.20.2.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/commons-cli/commons-cli/jars/commons-cli-1.2.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/xmlenc/xmlenc/jars/xmlenc-0.52.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/commons-httpclient/commons-httpclient/jars/commons-httpclient-3.0.1.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/junit/junit/jars/junit-4.5.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/commons-codec/commons-codec/jars/commons-codec-1.3.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/commons-net/commons-net/jars/commons-net-1.4.1.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/oro/oro/jars/oro-2.0.8.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.mortbay.jetty/jetty/jars/jetty-6.1.14.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.mortbay.jetty/jetty-util/jars/jetty-util-6.1.14.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/tomcat/jasper-runtime/jars/jasper-runtime-5.5.12.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/tomcat/jasper-compiler/jars/jasper-compiler-5.5.12.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.mortbay.jetty/jsp-api-2.1/jars/jsp-api-2.1-6.1.14.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/org.eclipse.jdt/core/jars/core-3.1.1.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/ant/ant/jars/ant-1.6.5.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/commons-el/commons-el/jars/commons-el-1.0.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/net.java.dev.jets3t/jets3t/jars/jets3t-0.7.1.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/commons-logging/commons-logging/jars/commons-logging-1.1.1.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/net.sf.kosmosfs/kfs/jars/kfs-0.3.jar[0m
+[0m[[0mdebug[0m] [0m	/home/yp/.ivy2/cache/hsqldb/hsqldb/jars/hsqldb-1.8.0.10.jar[0m
 [0m[[0mdebug[0m] [0mWaiting for thread run-main to exit[0m
-[0m[[31merror[0m] [0m(run-main) java.lang.UnsatisfiedLinkError: /tmp/javacpp1025354789218/libjniopencv_nonfree.so: libopencv_calib3d.so.2.4: cannot open shared object file: No such file or directory[0m
-java.lang.UnsatisfiedLinkError: /tmp/javacpp1025354789218/libjniopencv_nonfree.so: libopencv_calib3d.so.2.4: cannot open shared object file: No such file or directory
-	at java.lang.ClassLoader$NativeLibrary.load(Native Method)
-	at java.lang.ClassLoader.loadLibrary1(ClassLoader.java:1939)
-	at java.lang.ClassLoader.loadLibrary0(ClassLoader.java:1864)
-	at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1825)
-	at java.lang.Runtime.load0(Runtime.java:792)
-	at java.lang.System.load(System.java:1059)
-	at com.googlecode.javacpp.Loader.loadLibrary(Loader.java:566)
-	at com.googlecode.javacpp.Loader.load(Loader.java:489)
-	at com.googlecode.javacpp.Loader.load(Loader.java:431)
-	at com.googlecode.javacv.cpp.opencv_nonfree.<clinit>(opencv_nonfree.java:88)
-	at java.lang.Class.forName0(Native Method)
-	at java.lang.Class.forName(Class.java:266)
-	at com.googlecode.javacpp.Loader.load(Loader.java:453)
-	at com.googlecode.javacpp.Loader.load(Loader.java:431)
-	at com.googlecode.javacv.cpp.opencv_nonfree$SIFT.<clinit>(opencv_nonfree.java:96)
-	at py.Hello$.main(Hello.scala:43)
-	at py.Hello.main(Hello.scala)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:601)
-	at sbt.Run.invokeMain(Run.scala:68)
-	at sbt.Run.run0(Run.scala:61)
-	at sbt.Run.execute$1(Run.scala:50)
-	at sbt.Run$$anonfun$run$1.apply$mcV$sp(Run.scala:54)
-	at sbt.TrapExit$.executeMain$1(TrapExit.scala:33)
-	at sbt.TrapExit$$anon$1.run(TrapExit.scala:42)
-Caused by: java.lang.UnsatisfiedLinkError: no opencv_imgproc in java.library.path
-	at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1860)
-	at java.lang.Runtime.loadLibrary0(Runtime.java:845)
-	at java.lang.System.loadLibrary(System.java:1084)
-	at com.googlecode.javacpp.Loader.loadLibrary(Loader.java:593)
-	at com.googlecode.javacpp.Loader.load(Loader.java:481)
-	at com.googlecode.javacpp.Loader.load(Loader.java:431)
-	at com.googlecode.javacv.cpp.opencv_nonfree.<clinit>(opencv_nonfree.java:88)
-	at java.lang.Class.forName0(Native Method)
-	at java.lang.Class.forName(Class.java:266)
-	at com.googlecode.javacpp.Loader.load(Loader.java:453)
-	at com.googlecode.javacpp.Loader.load(Loader.java:431)
-	at com.googlecode.javacv.cpp.opencv_nonfree$SIFT.<clinit>(opencv_nonfree.java:96)
-	at py.Hello$.main(Hello.scala:43)
-	at py.Hello.main(Hello.scala)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:601)
-	at sbt.Run.invokeMain(Run.scala:68)
-	at sbt.Run.run0(Run.scala:61)
-	at sbt.Run.execute$1(Run.scala:50)
-	at sbt.Run$$anonfun$run$1.apply$mcV$sp(Run.scala:54)
-	at sbt.TrapExit$.executeMain$1(TrapExit.scala:33)
-	at sbt.TrapExit$$anon$1.run(TrapExit.scala:42)
-[0m[[0mdebug[0m] [0m	Thread run-main exited.[0m
-[0m[[0mdebug[0m] [0mInterrupting remaining threads (should be all daemons).[0m
-[0m[[0mdebug[0m] [0mSandboxed run complete..[0m
-java.lang.RuntimeException: Nonzero exit code: 1
-	at scala.sys.package$.error(package.scala:27)
-	at sbt.BuildCommon$$anonfun$toError$1.apply(Defaults.scala:1340)
-	at sbt.BuildCommon$$anonfun$toError$1.apply(Defaults.scala:1340)
-	at scala.Option.foreach(Option.scala:197)
-	at sbt.BuildCommon$class.toError(Defaults.scala:1340)
-	at sbt.Defaults$.toError(Defaults.scala:34)
-	at sbt.Defaults$$anonfun$runTask$1$$anonfun$apply$27.apply(Defaults.scala:519)
-	at sbt.Defaults$$anonfun$runTask$1$$anonfun$apply$27.apply(Defaults.scala:517)
-	at sbt.Scoped$$anonfun$hf5$1.apply(Structure.scala:581)
-	at sbt.Scoped$$anonfun$hf5$1.apply(Structure.scala:581)
-	at scala.Function1$$anonfun$compose$1.apply(Function1.scala:49)
-	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$12.apply(Structure.scala:311)
-	at sbt.Scoped$Reduced$$anonfun$combine$1$$anonfun$apply$12.apply(Structure.scala:311)
-	at sbt.$tilde$greater$$anonfun$$u2219$1.apply(TypeFunctions.scala:40)
-	at sbt.std.Transform$$anon$5.work(System.scala:71)
-	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:232)
-	at sbt.Execute$$anonfun$submit$1$$anonfun$apply$1.apply(Execute.scala:232)
-	at sbt.ErrorHandling$.wideConvert(ErrorHandling.scala:18)
-	at sbt.Execute.work(Execute.scala:238)
-	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:232)
-	at sbt.Execute$$anonfun$submit$1.apply(Execute.scala:232)
-	at sbt.ConcurrentRestrictions$$anon$4$$anonfun$1.apply(ConcurrentRestrictions.scala:159)
-	at sbt.CompletionService$$anon$2.call(CompletionService.scala:30)
-	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
-	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
-	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
-	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
-	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
-	at java.lang.Thread.run(Thread.java:722)
-[0m[[31merror[0m] [0m(compile:[31mrun[0m) Nonzero exit code: 1[0m
