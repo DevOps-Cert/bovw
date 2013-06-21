@@ -44,16 +44,17 @@ object Extractor {
     println(new Date().toGMTString() + " " + this.getClass().getName() + " " + "start of run over the Oxford Building 5K dataset")
     // for each file in the directory, extract features, store into files
     val folder = new File("resources/oxbuild_images")
-    val files  = folder.listFiles()
-    files.foreach(file => extractFeatures(file))
+    val files  = folder.list()
+    files.foreach(file => extractFeatures("resources/oxbuild_images/" + file))
     println(new Date().toGMTString() + " " + this.getClass().getName() + " " + "end of run over the Oxford Building 5K dataset")
   }
   
   // read one file and then output the features to one file
-  def extractFeatures(file : File){
-    println(new Date().toGMTString() + " " + this.getClass().getName() + " " + file.getName() + ": processing")
+  def extractFeatures(filename: String){
+    //println(new Date().toGMTString() + " " + this.getClass().getName() + " " + file.getName() + ": processing")
     val begin = System.nanoTime()
     // load image
+    var file = new File(filename)
     var image = cvLoadImageM(file.getAbsolutePath(), CV_LOAD_IMAGE_GRAYSCALE)
     var keyPoints = new KeyPoint()  
     sift.detect(image, null, keyPoints)
@@ -77,14 +78,19 @@ object Extractor {
     // write the statistics about this image
     stat.println(file.getName() + " " + (end - begin) / 1000000.0 + " " + cv_mat.size() / cv_mat.cols() + " " + cv_mat.cols() + " " + cv_mat.size())
     stat.flush()
+    println(new Date().toGMTString() + " " + this.getClass().getName() + " " + file.getName() + ": processed")
     
     // clear memory and garbage collection
+    file.delete()
+    //image.release()
+    keyPoints.deallocate()
+    cv_mat.release()
+    file = null
     image = null
     keyPoints = null
     points = null
     cv_mat = null
     System.gc()
     
-    println(new Date().toGMTString() + " " + this.getClass().getName() + " " + file.getName() + ": processed")
   }
 }
