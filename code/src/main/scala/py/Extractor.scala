@@ -14,8 +14,6 @@ import javax.swing.JFrame._
 import OpenCVUtils._
 import java.io.PrintWriter
 import java.util.ArrayList
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.Date
 
 
@@ -37,7 +35,10 @@ object Extractor {
   def main(args : Array[String]){
     //val file = new File("resources/oxbuild_images/ashmolean_000214.jpg")
     //extractFeatures(file)
-    run
+    //run
+    println(sift.info())
+    //println(des.info())
+    drawFromFile("resources/oxbuild_images/all_souls_000001.jpg")
   }
   
   def run(){
@@ -70,8 +71,10 @@ object Extractor {
       val row = new ArrayList[Double]
       for(j<- 0 until cv_mat.cols())
         row.add(cv_mat.get(i, j))
-       pw.println(row.toArray().mkString(" "))
-       pw.flush()
+      pw.print(points(i).angle() + " " + (points(i).octave() & 255) + " " + (points(i).octave() & 65280) +  
+         " " + points(i).size() + " " + points(i).position() + " " + points(i).response() + " " + points(i).pt() + " ")
+      pw.println(row.toArray().mkString(" "))
+      pw.flush()
     }
     
     val end = System.nanoTime()
@@ -93,4 +96,49 @@ object Extractor {
     System.gc()
     
   }
+  
+  def draw(keyPoints:KeyPoint, image:CvMat){
+    // Draw keyPoints
+    val featureImage = cvCreateImage(cvGetSize(image), image.depth(), 3)
+    drawKeypoints(image, keyPoints, featureImage, CvScalar.WHITE, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
+    show(featureImage, "SIFT Features")
+  }
+  
+  def drawFromFile(filename:String){
+    // to draw an arbitrary image file
+       // Read input image
+      // parameters used to detect SIFT key points
+    val nFeatures = 100
+    val nOctaveLayers = 3
+    val contrastThreshold = 0.03
+    val edgeThreshold = 10
+    val sigma = 1.6
+    val sift = new SIFT(nFeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma)
+    val image = loadAndShowOrExit(new File(filename))
+    var keyPoints = new KeyPoint()
+    sift.detect(image, null, keyPoints)
+    var points = toArray(keyPoints)
+    points.foreach(point => {
+      var octave = if ((point.octave & 255) < 128) (point.octave & 255) else (point.octave & 255) | -128
+      var scale = if (octave >= 0)  1.0f/(1 << octave) else (1 << -octave).asInstanceOf[Float]
+      scale = scale * 0.5f
+      octave = octave + 1
+      println("angle " + point.angle() + " octave " + point.octave() + " " + octave
+            + " " + ((point.octave() & 65280) >> 8) +  " scale " + scale + 
+      " size " + point.size() + " position " + point.position() + " response " + point.response() + " pt " + point.pt())     
+    })
+        
+    println("the last keypoint: angle " + points(points.size - 1).angle() + " octave " + points(points.size - 1).octave() + 
+        " pt " + points(points.size - 1).pt() + " size " + points(points.size - 1).size() + " capacity " + points(points.size - 1).capacity() + 
+        " limit " + points(points.size - 1).limit() + " position " + points(points.size - 1).position() + " response " + points(points.size - 1).response())
+        
+    println("key points number " + points.size)
+    // Draw keyPoints
+    val featureImage = cvCreateImage(cvGetSize(image), image.depth(), 3)
+    drawKeypoints(image, points(0), featureImage, CvScalar.GREEN, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
+    show(featureImage, "SIFT Features")
+    save(new File("ex.jpg"), featureImage)
+  }
+  
+  
 }
