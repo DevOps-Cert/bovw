@@ -92,8 +92,6 @@ object Extractor {
     println(new Date().toGMTString() + " " + this.getClass().getName() + " " + file.getName() + ": processed")
     
     // clear memory and garbage collection
-    file.delete()
-    //image.release()
     keyPoints.deallocate()
     cv_mat.release()
     file = null
