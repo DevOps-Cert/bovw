@@ -64,7 +64,7 @@ object Extractor {
     des.compute(image, keyPoints, cv_mat)
     
     // used to count the number of points in different scales
-    var s = Array(0,0,0,0,0,0); 
+    var s = Array(0,0,0,0,0,0,0,0); 
     
     if (cv_mat.isNull()) {println(new Date().toGMTString() + " " + this.getClass().getName() + " " + "empty cv_mat");return} // handling exception
     // write the cv_mat into a file
