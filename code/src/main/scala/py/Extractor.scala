@@ -35,10 +35,10 @@ object Extractor {
   def main(args : Array[String]){
     //val file = new File("resources/oxbuild_images/ashmolean_000214.jpg")
     //extractFeatures(file)
-    //run
-    println(sift.info())
+    run
+    //println(sift.info())
     //println(des.info())
-    drawFromFile("resources/oxbuild_images/all_souls_000001.jpg")
+    //drawFromFile("resources/oxbuild_images/all_souls_000001.jpg")
   }
   
   def run(){
@@ -63,6 +63,9 @@ object Extractor {
     var cv_mat = new CvMat(null)
     des.compute(image, keyPoints, cv_mat)
     
+    // used to count the number of points in different scales
+    var s = Array(0,0,0,0,0); 
+    
     if (cv_mat.isNull()) {println(new Date().toGMTString() + " " + this.getClass().getName() + " " + "empty cv_mat");return} // handling exception
     // write the cv_mat into a file
     val pw = new PrintWriter("resources/features/" + file.getName() + ".txt")
@@ -71,15 +74,20 @@ object Extractor {
       val row = new ArrayList[Double]
       for(j<- 0 until cv_mat.cols())
         row.add(cv_mat.get(i, j))
-      pw.print(points(i).angle() + " " + (points(i).octave() & 255) + " " + (points(i).octave() & 65280) +  
-         " " + points(i).size() + " " + points(i).position() + " " + points(i).response() + " " + points(i).pt() + " ")
+      // write the key point information as well as the 128B feature into file  
+      pw.print(points(i).position() + " " + points(i).pt() + " " + points(i).response() + " " + points(i).angle() + " " + points(i).size() + " ")
+      val paras = getSIFTParameters(points(i)) // result as a tuple
+      pw.print((paras._1 + 1) + " " + paras._2 + " " + paras._3 * 0.5f + " " + paras._4  + " ")
       pw.println(row.toArray().mkString(" "))
       pw.flush()
+      // add the scale number information
+      s(paras._1 + 1) = s(paras._1 + 1) + 1
+      
     }
     
     val end = System.nanoTime()
     // write the statistics about this image
-    stat.println(file.getName() + " " + (end - begin) / 1000000.0 + " " + cv_mat.size() / cv_mat.cols() + " " + cv_mat.cols() + " " + cv_mat.size())
+    stat.println(file.getName() + " " + (end - begin) / 1000000.0 + " " + cv_mat.size() / cv_mat.cols() + " " + s.mkString(" "))
     stat.flush()
     println(new Date().toGMTString() + " " + this.getClass().getName() + " " + file.getName() + ": processed")
     
@@ -97,6 +105,24 @@ object Extractor {
     
   }
   
+  def getSIFTParameters(point : KeyPoint) = {
+    // get octave
+	var octave = point.octave & 255;
+    octave = if (octave < 128) octave else octave | -128
+    // get layer
+    var layer = (point.octave >> 8) & 255;
+    // get scale
+    var scale = if (octave >= 0)  1.0f/(1 << octave) else (1 << -octave).asInstanceOf[Float]
+    // multiply the point's radius by the calculated scale
+    var scl = point.size * 0.5f * scale;
+    // determines the size of a single descriptor orientation histogram
+    var histWidth = 3.0f * scl;
+    // descWidth is the number of histograms on one side of the descriptor
+    val radius = (histWidth * 1.4142135623730951f * (4 + 1) * 0.5f).toInt
+    (octave, layer, scale, radius) 
+  }
+  
+  
   def draw(keyPoints:KeyPoint, image:CvMat){
     // Draw keyPoints
     val featureImage = cvCreateImage(cvGetSize(image), image.depth(), 3)
@@ -108,7 +134,7 @@ object Extractor {
     // to draw an arbitrary image file
        // Read input image
       // parameters used to detect SIFT key points
-    val nFeatures = 100
+    val nFeatures = 30
     val nOctaveLayers = 3
     val contrastThreshold = 0.03
     val edgeThreshold = 10
@@ -118,14 +144,11 @@ object Extractor {
     var keyPoints = new KeyPoint()
     sift.detect(image, null, keyPoints)
     var points = toArray(keyPoints)
-    points.foreach(point => {
-      var octave = if ((point.octave & 255) < 128) (point.octave & 255) else (point.octave & 255) | -128
-      var scale = if (octave >= 0)  1.0f/(1 << octave) else (1 << -octave).asInstanceOf[Float]
-      scale = scale * 0.5f
-      octave = octave + 1
-      println("angle " + point.angle() + " octave " + point.octave() + " " + octave
-            + " " + ((point.octave() & 65280) >> 8) +  " scale " + scale + 
-      " size " + point.size() + " position " + point.position() + " response " + point.response() + " pt " + point.pt())     
+    points.slice(23, 30).foreach(point => {
+      // output the getSIFTParameters and other key point information
+      val paras = getSIFTParameters(point)
+      print(point.position() + " " + point.pt() + " " + point.response() + " " + point.angle() + " ")  
+      println(paras._1 + " " + paras._2 + " " + paras._3 + " " + paras._4  + " " + point.size())
     })
         
     println("the last keypoint: angle " + points(points.size - 1).angle() + " octave " + points(points.size - 1).octave() + 
@@ -135,10 +158,10 @@ object Extractor {
     println("key points number " + points.size)
     // Draw keyPoints
     val featureImage = cvCreateImage(cvGetSize(image), image.depth(), 3)
-    drawKeypoints(image, points(0), featureImage, CvScalar.GREEN, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
+    drawKeypoints(image, points(24), featureImage, CvScalar.RED, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
     show(featureImage, "SIFT Features")
     save(new File("ex.jpg"), featureImage)
   }
   
-  
+
 }
