@@ -87,7 +87,7 @@ object Extractor {
     
     val end = System.nanoTime()
     // write the statistics about this image
-    stat.println(file.getName() + " " + (end - begin) / 1000000.0 + " " + cv_mat.size() / cv_mat.cols() + " " + s.mkString(" "))
+    stat.println(file.getName() + " " + (end - begin) / 1000000.0 + " " + cv_mat.cols() + " " + s.mkString(" "))
     stat.flush()
     println(new Date().toGMTString() + " " + this.getClass().getName() + " " + file.getName() + ": processed")
     
