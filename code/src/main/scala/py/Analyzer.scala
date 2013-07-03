@@ -14,10 +14,11 @@ object Analyzer {
 	features mean: 17272 min: 24 max: 99228
   **/
   def main(args : Array[String]){
-    extract("resources/stat.txt")
-    evaluateTime()
-    evaluateFeature()
-    checkDuplicate("resources/features", 5000)
+    //extract("resources/stat.txt")
+    //evaluateTime()
+    //evaluateFeature()
+    //checkDuplicate("resources/features", 5000)
+    scaleDist("resources/stat.txt")
   }
   
   // extract statistics from file
@@ -98,6 +99,36 @@ object Analyzer {
         //println(filename + " has no duplicates")
   }
   
-  
+  def scaleDist(filename : String){
+    // count the number of features at different scale
+    val s = Array(0, 0, 0, 0, 0, 0, 0, 0)
+    val lines = Source.fromFile(filename).getLines
+    lines.foreach(line =>{
+      val ss = line.split(" ").slice(3, 11)
+      //println(ss.size)
+      //ss.foreach(s => println(s))
+      for(i <- 0 until ss.size){
+        s(i) = s(i) + Integer.parseInt(ss(i))
+      }
+    })
+    // calculate the scale distribution
+    val sum = s(0) + s(1) + s(2) + s(3) + s(4) + s(5) + s(6) + s(7)
+    println(sum)
+    println(sum.toDouble / 5062)
+    println(s(0).toDouble / sum)
+    println(s(1).toDouble / sum)
+    println(s(2).toDouble / sum)
+    println(s(3).toDouble / sum)
+    println(s(4).toDouble / sum)
+    println(s(5).toDouble / sum)
+    println(s(6).toDouble / sum)
+    println(s(7).toDouble / sum)
+    /*	the scale distribution
+     * 21860400, 4318.530225207428
+		0.6737830963751807	0.22238234433038737 0.0730101919452526 0.022437558324641817 
+		0.0064115478216318095 0.0016333186949918574 3.215403194818027E-4 2.040218843205065E-5
+     * */
+     
+  }
   
 }
