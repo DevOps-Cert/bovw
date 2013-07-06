@@ -16,7 +16,6 @@ import java.io.PrintWriter
 import java.util.ArrayList
 import java.util.Date
 
-
 object Extractor {
   
   // parameters used to detect SIFT key points
@@ -35,10 +34,10 @@ object Extractor {
   def main(args : Array[String]){
     //val file = new File("resources/oxbuild_images/ashmolean_000214.jpg")
     //extractFeatures(file)
-    run
+    //run
     //println(sift.info())
     //println(des.info())
-    //drawFromFile("resources/oxbuild_images/all_souls_000001.jpg")
+    drawFromFile("resources/oxbuild_images/all_souls_000001.jpg")
   }
   
   def run(){
@@ -132,7 +131,7 @@ object Extractor {
     // to draw an arbitrary image file
        // Read input image
       // parameters used to detect SIFT key points
-    val nFeatures = 30
+    val nFeatures = 0
     val nOctaveLayers = 3
     val contrastThreshold = 0.03
     val edgeThreshold = 10
@@ -142,11 +141,12 @@ object Extractor {
     var keyPoints = new KeyPoint()
     sift.detect(image, null, keyPoints)
     var points = toArray(keyPoints)
-    points.slice(23, 30).foreach(point => {
+    points.slice(5000, 5400).foreach(point => {
       // output the getSIFTParameters and other key point information
       val paras = getSIFTParameters(point)
-      print(point.position() + " " + point.pt() + " " + point.response() + " " + point.angle() + " ")  
-      println(paras._1 + " " + paras._2 + " " + paras._3 + " " + paras._4  + " " + point.size())
+      //print(point.position() + " " + point.pt() + " " + point.response() + " " + point.angle() + " ")  
+      //println(paras._1 + " " + paras._2 + " " + paras._3 + " " + paras._4  + " " + point.size())
+      println(point.position() + " " + point.pt() + " " + paras._1)
     })
         
     println("the last keypoint: angle " + points(points.size - 1).angle() + " octave " + points(points.size - 1).octave() + 
@@ -161,5 +161,32 @@ object Extractor {
     save(new File("ex.jpg"), featureImage)
   }
   
+  
+  def pointMatch(image0 : IplImage, mat0 : CvMat, point0 : KeyPoint, image1 : IplImage, mat1 : CvMat, point1 : KeyPoint){
+    
+    val matcher = new BFMatcher(NORM_L2, false)
+    val matches = new DMatch()
 
+    matcher.`match`(mat0, mat1, matches, null)
+    println("Matched: " + matches.capacity)
+
+    // Select only 25 best matches
+    val bestMatches = selectBest(matches, 25)
+
+    // Draw best matches
+    val imageMatches = cvCreateImage(new CvSize(image0.width + image1.width, image0.height), image0.depth, 3)
+    drawMatches(image0, point0, image1, point1,
+        bestMatches, imageMatches, CvScalar.BLUE, CvScalar.RED, null, DrawMatchesFlags.DEFAULT)
+    show(imageMatches, "Best SURF Feature Matches")
+
+  }
+      /** Select only the best matches from the list. Return new list. */
+  def selectBest(matches: DMatch, numberToSelect: Int): DMatch = {
+        // Convert to Scala collection, and sort
+        val sorted = toArray(matches).sortWith(_ compare _)
+        //sortWith(_ compare _)
+
+        // Select the best, and return in native vector
+        toNativeVector(sorted.take(numberToSelect))
+    }
 }
