@@ -161,6 +161,22 @@ object Extractor {
     save(new File("ex.jpg"), featureImage)
   }
   
+  def drawScales(image : IplImage, point : KeyPoint){
+    // divide the key points by the scales
+    val marks = Array(-1, -1, -1, -1, -1, -1, -1, -1)
+    val points = toArray(point)
+    for(i <-0 until points.size){
+      var octave = point.octave & 255;
+      octave = if (octave < 128) octave else octave | -128
+      if (marks(octave + 1) == -1) marks(octave) = i
+    }
+    val psa = new Array[KeyPoint](8)
+    for(i<-0 unitl marks.size){
+      // create a new key point vector
+      
+      // show image
+    }
+  }
   
   def pointMatch(image0 : IplImage, mat0 : CvMat, point0 : KeyPoint, image1 : IplImage, mat1 : CvMat, point1 : KeyPoint){
     
