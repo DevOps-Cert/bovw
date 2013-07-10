@@ -8,6 +8,7 @@ import weka.core.FastVector
 import weka.core.Instance
 import weka.core.Instance
 import scala.io.Source
+import weka.clusterers.ClusterEvaluation
 
 object Clustering {
   // TODO: weka.jar and Mahout
@@ -37,8 +38,14 @@ object Clustering {
     kmeans.buildClusterer(features)
     // evaluate the clusters
     val ass = kmeans.getAssignments()
-    ass.foreach(a =>{println(a)})
-    
+    //ass.foreach(a =>{println(a)})
+    val eval = new ClusterEvaluation()
+    eval.setClusterer(kmeans)
+    eval.evaluateClusterer(features)
+    println("# of clusters: " + eval.getNumClusters())
+     
+    // clustering new instance
+    // kmeans.clusterInstance(instance)
   }
   
   def getFeatures(filename : String, fv : FastVector) = {
