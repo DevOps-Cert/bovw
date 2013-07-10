@@ -34,7 +34,7 @@ object Extractor {
   def main(args : Array[String]){
     //run
     //drawFromFile("resources/oxbuild_images/all_souls_000001.jpg")
-    matchFeatures()
+    matchFeatures(2)
   }
   
   def run(){
@@ -122,6 +122,7 @@ object Extractor {
     val featureImage = cvCreateImage(cvGetSize(image), image.depth(), 3)
     drawKeypoints(image, keyPoints, featureImage, CvScalar.RED, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
     show(featureImage, "SIFT Features scale = " + i)
+    save(new File("resources/s" + i + ".jpg"), featureImage)
   }
   
   def drawFromFile(filename:String){
@@ -168,18 +169,37 @@ object Extractor {
      }
   }
   
-  def matchFeatures(){
+  def matchFeatures(scale : Integer){
     val image0 = cvLoadImage("resources/oxbuild_images/all_souls_000002.jpg", CV_LOAD_IMAGE_GRAYSCALE)
     val image1 = cvLoadImage("resources/oxbuild_images/all_souls_000001.jpg", CV_LOAD_IMAGE_GRAYSCALE)
     var point0 = new KeyPoint()  
     sift.detect(image0, null, point0)
+    val marks0 = Array(-1, -1, -1, -1, -1, -1, -1, -1)
+    val points0 = toArray(point0)
+    for(i <-0 until points0.size){
+      var octave = points0(i).octave & 255;
+      octave = if (octave < 128) octave else octave | -128
+      marks0(octave + 1) = i
+    }
+    points0(marks0(scale) + 1).limit(points0(marks0(scale) + 1).position() + points0.slice(marks0(scale) + 1, marks0(scale + 1) + 1).size)
     var mat0 = new CvMat(null)
-    des.compute(image0, point0, mat0)
+    des.compute(image0, points0(marks0(scale) + 1), mat0)
+    
+    
     var point1 = new KeyPoint()  
     sift.detect(image1, null, point1)
+    val marks1 = Array(-1, -1, -1, -1, -1, -1, -1, -1)
+    val points1 = toArray(point1)
+    for(i <-0 until points1.size){
+      var octave = points1(i).octave & 255;
+      octave = if (octave < 128) octave else octave | -128
+      marks1(octave + 1) = i
+    }
+    points1(marks1(scale) + 1).limit(points1(marks1(scale) + 1).position() + points1.slice(marks1(scale) + 1, marks1(scale + 1) + 1).size)
     var mat1 = new CvMat(null)
-    des.compute(image1, point1, mat1)
-    pointMatch(image0, mat0, point0, image1, mat1, point1)
+    des.compute(image1, points1(marks1(scale) + 1), mat1)
+    
+    pointMatch(image0, mat0, points0(marks0(scale) + 1), image1, mat1, points1(marks1(scale) + 1))
   }
   
   def pointMatch(image0 : IplImage, mat0 : CvMat, point0 : KeyPoint, image1 : IplImage, mat1 : CvMat, point1 : KeyPoint){
@@ -199,6 +219,7 @@ object Extractor {
     drawMatches(image0, point0, image1, point1,
         bestMatches, imageMatches, CvScalar.BLUE, CvScalar.RED, null, DrawMatchesFlags.DRAW_RICH_KEYPOINTS)
     show(imageMatches, "Best SIF Feature Matches")
+    save(new File("resources/match.jpg"), imageMatches)
 
   }
       /** Select only the best matches from the list. Return new list. */
