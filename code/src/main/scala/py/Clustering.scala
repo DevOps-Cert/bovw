@@ -2,13 +2,12 @@ package py
 
 import java.util.ArrayList
 import weka.core.Attribute
-import weka.clusterers.SimpleKMeans
 import weka.core.Instances
 import weka.core.FastVector
 import weka.core.Instance
 import weka.core.Instance
 import scala.io.Source
-import weka.clusterers.ClusterEvaluation
+import weka.clusterers._
 
 object Clustering {
   // TODO: weka.jar and Mahout
@@ -27,6 +26,7 @@ object Clustering {
     val features = getFeatures("resources/features/all_souls_000000.jpg.txt", fv)  
     println(features.numInstances())
 	
+    val t0 = System.nanoTime()
     // use weka k-means cluster
 	val kmeans = new SimpleKMeans()
 	kmeans.setSeed(10)
@@ -37,10 +37,32 @@ object Clustering {
     // learn the clusters
     kmeans.buildClusterer(features)
     // evaluate the clusters
-    val ass = kmeans.getAssignments()
-    //ass.foreach(a =>{println(a)})
+    //val ass = kmeans.getAssignments()
+    //ass.slice(0, 50).foreach(a =>{println(a)})
+    val t1 = System.nanoTime()
+    println("k-means clustering " + (t1 - t0)/1000.0)
+    
+    val options = new Array[String](2)
+    options(0) = "-I";                 // max. iterations
+    options(1) = "100";
+    val em = new EM();   // new instance of clusterer
+    em.setOptions(options);     // set the options
+    em.buildClusterer(features);    // build the clusterer
+    
+    val t2 = System.nanoTime()
+    println("EM clustering " + (t2 - t1)/1000.0)
+    
+    
+    val ha = new HierarchicalClusterer()
+    ha.buildClusterer(features)
+    val t3 = System.nanoTime()
+    println("hierarchical clustering " + (t3 - t2)/1000.0)
+    
     val eval = new ClusterEvaluation()
-    eval.setClusterer(kmeans)
+    //eval.setClusterer(kmeans)
+    //eval.evaluateClusterer(features)
+    //println("# of clusters: " + eval.getNumClusters())
+    eval.setClusterer(em)
     eval.evaluateClusterer(features)
     println("# of clusters: " + eval.getNumClusters())
      
