@@ -42,20 +42,21 @@ object Clustering {
     val t1 = System.nanoTime()
     println("k-means clustering " + (t1 - t0)/1000000000.0)
     
-    val options = new Array[String](2)
     val em = new EM();   // new instance of clusterer
     // set the options
-    em.setMaxIterations(1)
+    em.setMaxIterations(100)
+    em.setSeed(10)
+    em.setNumClusters(5)
     em.buildClusterer(features);    // build the clusterer
     val t2 = System.nanoTime()
-    println("EM clustering one iteration" + (t2 - t1)/1000000000.0)
+    println("EM clustering " + (t2 - t1)/1000000000.0)
     
     
     val ha = new HierarchicalClusterer()
-    ha.setNumClusters(2)
+    ha.setNumClusters(5)
     ha.buildClusterer(features)
     val t3 = System.nanoTime()
-    println("hierarchical clustering 2 clusters" + (t3 - t2)/1000000000.0)
+    println("hierarchical clustering " + (t3 - t2)/1000000000.0)
     
     // Cobweb
     val cb = new Cobweb()
