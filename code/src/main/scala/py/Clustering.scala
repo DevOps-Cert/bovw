@@ -78,7 +78,6 @@ object Clustering {
     
     var ha = new HierarchicalClusterer()
     ha.setNumClusters(5)
-    ha.setPrintNewick(true)
     ha.buildClusterer(features)
     eval.setClusterer(ha)
     eval.evaluateClusterer(features)
