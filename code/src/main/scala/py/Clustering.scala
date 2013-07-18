@@ -34,17 +34,32 @@ object Clustering {
 	kmeans.setMaxIterations(100)
 	kmeans.setNumClusters(5)
 	kmeans.setPreserveInstancesOrder(true);
+    kmeans.setDisplayStdDevs(true)
     // learn the clusters
     kmeans.buildClusterer(features)
     // evaluate the clusters
-    //val ass = kmeans.getAssignments()
-    //ass.slice(0, 50).foreach(a =>{println(a)})
+    val eval = new ClusterEvaluation()
+    eval.setClusterer(kmeans)
+    eval.evaluateClusterer(features)
+    println(eval.clusterResultsToString())
     kmeans = null
     System.gc()
     val t1 = System.nanoTime()
-    println("k-means clustering " + (t1 - t0)/1000000000.0)
+    println("k-means clustering " + (t1 - t0)/1000000000.0 + " seconds")
     
-    
+    // Cobweb
+    var cb = new Cobweb()
+    cb.setSeed(10)
+    cb.setAcuity(1.0)
+    cb.setCutoff(0.234)
+    cb.buildClusterer(features)
+    eval.setClusterer(cb)
+    eval.evaluateClusterer(features)
+    println(eval.clusterResultsToString())
+    cb = null
+    System.gc()
+    val t2 = System.nanoTime()
+    println("Cobweb clustering " + (t2 - t1)/1000000000.0)
     
     var em = new EM();   // new instance of clusterer
     // set the options
@@ -52,32 +67,29 @@ object Clustering {
     em.setSeed(10)
     em.setNumClusters(5)
     em.buildClusterer(features);    // build the clusterer
+    eval.setClusterer(em)
+    eval.evaluateClusterer(features)
+    println(eval.clusterResultsToString())
     em = null
     System.gc()
-    val t2 = System.nanoTime()
-    println("EM clustering " + (t2 - t1)/1000000000.0)
+    val t3 = System.nanoTime()
+    println("EM clustering " + (t3 - t2)/1000000000.0)
     
     
     var ha = new HierarchicalClusterer()
     ha.setNumClusters(5)
+    ha.setPrintNewick(true)
     ha.buildClusterer(features)
+    eval.setClusterer(ha)
+    eval.evaluateClusterer(features)
+    println(eval.clusterResultsToString())
     ha = null
     System.gc()
-    val t3 = System.nanoTime()
-    println("hierarchical clustering " + (t3 - t2)/1000000000.0)
-    
-    // Cobweb
-    var cb = new Cobweb()
-    cb.setSeed(10)
-    cb.buildClusterer(features)
-    cb = null
-    System.gc()
     val t4 = System.nanoTime()
-    println("Cobweb clustering " + (t4 - t3)/1000000000.0)
+    println("hierarchical clustering " + (t4 - t3)/1000000000.0)
+
     
-    //val eval = new ClusterEvaluation()
-    //eval.setClusterer(kmeans)
-    //eval.evaluateClusterer(features)
+
     //println("# of clusters: " + eval.getNumClusters())
     //eval.setClusterer(em)
     //eval.evaluateClusterer(features)

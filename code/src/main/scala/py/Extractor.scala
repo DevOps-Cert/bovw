@@ -170,8 +170,8 @@ object Extractor {
   }
   
   def matchFeatures(scale : Integer){
-    val image0 = cvLoadImage("resources/oxbuild_images/all_souls_000002.jpg", CV_LOAD_IMAGE_GRAYSCALE)
-    val image1 = cvLoadImage("resources/oxbuild_images/all_souls_000001.jpg", CV_LOAD_IMAGE_GRAYSCALE)
+    val image0 = cvLoadImage("resources/oxbuild_images/all_souls_000006.jpg", CV_LOAD_IMAGE_GRAYSCALE)
+    val image1 = cvLoadImage("resources/oxbuild_images/all_souls_000015.jpg", CV_LOAD_IMAGE_GRAYSCALE)
     var point0 = new KeyPoint()  
     sift.detect(image0, null, point0)
     val marks0 = Array(-1, -1, -1, -1, -1, -1, -1, -1)
