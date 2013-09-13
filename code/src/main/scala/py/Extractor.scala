@@ -153,7 +153,6 @@ object Extractor {
       marks(octave + 1) = i
     }
     println(marks.mkString(" "))
-    val psa = new Array[KeyPoint](8)
     for(i<-0 until marks.size){
       // create a new key point vector
       var ps : Array[KeyPoint] = null
@@ -172,6 +171,8 @@ object Extractor {
   def matchFeatures(scale : Integer){
     val image0 = cvLoadImage("resources/oxbuild_images/all_souls_000006.jpg", CV_LOAD_IMAGE_GRAYSCALE)
     val image1 = cvLoadImage("resources/oxbuild_images/all_souls_000015.jpg", CV_LOAD_IMAGE_GRAYSCALE)
+    
+    // cleanup here
     var point0 = new KeyPoint()  
     sift.detect(image0, null, point0)
     val marks0 = Array(-1, -1, -1, -1, -1, -1, -1, -1)
