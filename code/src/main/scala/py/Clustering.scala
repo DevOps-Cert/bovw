@@ -114,5 +114,8 @@ object Clustering {
     ins
   }
   
+  def filter(){// filter out features at scale 0 and 1
+    
+  }
   
 }

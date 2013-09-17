@@ -35,6 +35,8 @@ object Extractor {
     //run
     //drawFromFile("resources/oxbuild_images/all_souls_000001.jpg")
     matchFeatures(2)
+    matchFeatures(3)
+    matchFeatures(4)
   }
   
   def run(){
@@ -169,38 +171,29 @@ object Extractor {
   }
   
   def matchFeatures(scale : Integer){
-    val image0 = cvLoadImage("resources/oxbuild_images/all_souls_000006.jpg", CV_LOAD_IMAGE_GRAYSCALE)
-    val image1 = cvLoadImage("resources/oxbuild_images/all_souls_000015.jpg", CV_LOAD_IMAGE_GRAYSCALE)
-    
-    // cleanup here
-    var point0 = new KeyPoint()  
-    sift.detect(image0, null, point0)
-    val marks0 = Array(-1, -1, -1, -1, -1, -1, -1, -1)
-    val points0 = toArray(point0)
-    for(i <-0 until points0.size){
-      var octave = points0(i).octave & 255;
+    // get parameters for match
+    val (image0, mat0, points0, marks0) = getImageMatPoints("resources/oxbuild_images/all_souls_000006.jpg", scale - 1)
+    val (image1, mat1, points1, marks1) = getImageMatPoints("resources/oxbuild_images/all_souls_000015.jpg", scale - 1)
+    // match two images
+    pointMatch(image0, mat0, points0(marks0(scale - 1) + 1), image1, mat1, points1(marks1(scale - 1) + 1))
+  }
+  
+  def getImageMatPoints(filepath: String, scale:Integer ) = {
+    val image = cvLoadImage(filepath, CV_LOAD_IMAGE_GRAYSCALE)
+    val point = new KeyPoint()
+    sift.detect(image, null, point)
+    val marks = Array(-1, -1, -1, -1, -1, -1, -1, -1)
+    val points = toArray(point)
+    for(i <-0 until points.size){
+      var octave = points(i).octave & 255;
       octave = if (octave < 128) octave else octave | -128
-      marks0(octave + 1) = i
+      marks(octave + 1) = i
     }
-    points0(marks0(scale) + 1).limit(points0(marks0(scale) + 1).position() + points0.slice(marks0(scale) + 1, marks0(scale + 1) + 1).size)
-    var mat0 = new CvMat(null)
-    des.compute(image0, points0(marks0(scale) + 1), mat0)
+    points(marks(scale) + 1).limit(points(marks(scale) + 1).position() + marks(scale + 1) - marks(scale))
+    var mat = new CvMat(null)
+    des.compute(image, points(marks(scale) + 1), mat)
     
-    
-    var point1 = new KeyPoint()  
-    sift.detect(image1, null, point1)
-    val marks1 = Array(-1, -1, -1, -1, -1, -1, -1, -1)
-    val points1 = toArray(point1)
-    for(i <-0 until points1.size){
-      var octave = points1(i).octave & 255;
-      octave = if (octave < 128) octave else octave | -128
-      marks1(octave + 1) = i
-    }
-    points1(marks1(scale) + 1).limit(points1(marks1(scale) + 1).position() + points1.slice(marks1(scale) + 1, marks1(scale + 1) + 1).size)
-    var mat1 = new CvMat(null)
-    des.compute(image1, points1(marks1(scale) + 1), mat1)
-    
-    pointMatch(image0, mat0, points0(marks0(scale) + 1), image1, mat1, points1(marks1(scale) + 1))
+    (image, mat, points, marks)
   }
   
   def pointMatch(image0 : IplImage, mat0 : CvMat, point0 : KeyPoint, image1 : IplImage, mat1 : CvMat, point1 : KeyPoint){
