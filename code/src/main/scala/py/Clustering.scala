@@ -8,6 +8,8 @@ import weka.core.Instance
 import weka.core.Instance
 import scala.io.Source
 import weka.clusterers._
+import java.io.File
+import java.io.PrintWriter
 
 object Clustering {
   // TODO: weka.jar and Mahout
@@ -16,7 +18,11 @@ object Clustering {
   
   
   def main(args : Array[String]){
-    
+    filterFeatures()
+    // evalClustering()
+  }
+  
+  def evalClustering(){     
 	// set the attribute parameters
     val fv = new FastVector(128)
 	for (i <- 0 until 128)
@@ -98,6 +104,8 @@ object Clustering {
     // kmeans.clusterInstance(instance)
   }
   
+  
+  
   def getFeatures(filename : String, fv : FastVector) = {
     val ins = new Instances("SIFT", fv, 0)
     val lines = Source.fromFile(filename).getLines
@@ -114,7 +122,31 @@ object Clustering {
     ins
   }
   
-  def filter(){// filter out features at scale 0 and 1
+  def filterFeatures(){// filter out features at scale 0 and 1
+    // read file list
+    val folder = new File("resources/features")
+    val files  = folder.list()
+    var index = 0
+    var num = 0
+    files.foreach(filename => {
+      // read each file 
+      val lines = Source.fromFile("resources/features/" + filename).getLines
+      val pw = new PrintWriter("resources/features_new/" + filename)
+      lines.foreach(line => {
+        val array = line.split(" ")
+        val scale = Integer.parseInt(array(6))      
+        if (scale >= 2){
+          //println(scale)
+          //pw.println(array.slice(10, array.size).mkString(" "))
+          pw.println(array.mkString(" "))
+          num = num + 1
+        }
+      })
+      pw.close()
+      index = index + 1
+      println(index + " " + filename + ": processed")
+    })
+    println("total num of features:" + num)
     
   }
   
