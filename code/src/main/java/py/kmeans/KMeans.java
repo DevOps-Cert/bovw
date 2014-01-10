@@ -8,6 +8,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.JobClient;
@@ -15,6 +16,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.SequenceFileInputFormat;
 import org.apache.hadoop.mapred.SequenceFileOutputFormat;
 import org.apache.hadoop.mapred.lib.HashPartitioner;
+import org.apache.mahout.clustering.iterator.ClusterWritable;
 import org.apache.mahout.clustering.kmeans.RandomSeedGenerator;
 import org.apache.mahout.common.distance.CosineDistanceMeasure;
 import org.apache.mahout.math.DenseVector;
@@ -32,8 +34,8 @@ public class KMeans {
 		// setup an experiment with small data
 		// writeVectors("data/vs.seq");
 		// createSeeds("data/vs.seq", "seeds");
-		readSequenceFile("seeds/part-randomSeed");
-		readSequenceFile("data/vs.seq");
+		readCenters("seeds/part-randomSeed");
+		// readData("data/vs.seq");
 	}
 	
 	public static void run(String[] args) throws IOException{
@@ -62,7 +64,7 @@ public class KMeans {
 		}
 	}
 	
-	public static void readSequenceFile(String filename) throws IOException{
+	public static void readData(String filename) throws IOException{
 		
 		Configuration conf = new Configuration();
 	    FileSystem fs = FileSystem.get(URI.create(filename), conf);
@@ -72,13 +74,37 @@ public class KMeans {
 	    LongWritable key = new LongWritable();
 	    VectorWritable val = new VectorWritable();
 	    
-	    //reader.getKeyClassName();
-	    //reader.next(key, val);
+	    //System.out.println(reader.getKeyClassName());
+	    //System.out.println(reader.getValueClassName());
 	    
 	    while(reader.next(key, val)){
 	    	// output the key and value
 	    	System.out.println(key);
 	    	System.out.println(val);
+	    }
+	    
+	    reader.close();
+	}
+	
+	public static void readCenters(String filename) throws IOException{
+		
+		Configuration conf = new Configuration();
+	    FileSystem fs = FileSystem.get(URI.create(filename), conf);
+	    Path cfile = new Path(filename);
+	    
+	    SequenceFile.Reader reader = new SequenceFile.Reader(fs, cfile, conf);
+	    Text key = new Text();
+	    ClusterWritable val = new ClusterWritable();
+	    
+	    //System.out.println(reader.getKeyClassName());
+	    //System.out.println(reader.getValueClassName());
+	    
+	    while(reader.next(key, val)){
+	    	// output the key and value
+	    	System.out.println(key);
+	    	System.out.println(val.getValue());
+	    	//val.getValue()
+	    	
 	    }
 	    
 	    reader.close();
@@ -113,7 +139,11 @@ public class KMeans {
 			writer.append(new LongWritable(rn++), vw);
 		}
 		
-		writer.close();
+		writer.close();	
+	}
+	
+	// load centers into memory
+	public static void loadCenters(){
 		
 	}
 	
