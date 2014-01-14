@@ -25,17 +25,22 @@ import org.apache.mahout.math.VectorWritable;
 
 public class KMeans {
 	
-	public static int k = 2;
-	public static int d = 2;
+	public static int k = 1000;
+	public static int d = 128;
 	private static int iterNum = 1;
 	public static Path centers = null; 
 	
 	public static void main(String[] args) throws IOException{
 		// setup an experiment with small data
 		// writeVectors("data/vs.seq");
-		// createSeeds("data/vs.seq", "seeds");
-		readCenters("seeds/part-randomSeed");
+		createSeeds(args[0], args[1]);
+		// readCenters("seeds/part-randomSeed");
 		// readData("data/vs.seq");
+		// args = new String[3];
+		// args[0] = "/home/yp/Desktop/fs.seq";
+		args[1] = args[1] + "/part-randomSeed";
+		// args[2] = "output";
+		run(args);
 	}
 	
 	public static void run(String[] args) throws IOException{
@@ -102,7 +107,10 @@ public class KMeans {
 	    while(reader.next(key, val)){
 	    	// output the key and value
 	    	System.out.println(key);
-	    	System.out.println(val.getValue());
+	    	System.out.println(val.getValue().getCenter());
+	    	//Cluster cl = val.getValue();
+	    	//cl.getParameters();
+	    	
 	    	//val.getValue()
 	    	
 	    }
@@ -140,11 +148,6 @@ public class KMeans {
 		}
 		
 		writer.close();	
-	}
-	
-	// load centers into memory
-	public static void loadCenters(){
-		
 	}
 	
 }
