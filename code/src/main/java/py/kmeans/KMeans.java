@@ -25,27 +25,27 @@ import org.apache.mahout.math.VectorWritable;
 
 public class KMeans {
 	
-	public static int k = 1000;
+	public static int k = 30;
 	public static int d = 128;
 	private static int iterNum = 1;
-	public static Path centers = null; 
+	public static String centers = "/user/hadoop/cls/part-randomSeed"; 
 	
 	public static void main(String[] args) throws IOException{
 		// setup an experiment with small data
 		// writeVectors("data/vs.seq");
-		createSeeds(args[0], args[1]);
+		// createSeeds(args[0], args[1]);
 		// readCenters("seeds/part-randomSeed");
 		// readData("data/vs.seq");
 		// args = new String[3];
 		// args[0] = "/home/yp/Desktop/fs.seq";
-		args[1] = args[1] + "/part-randomSeed";
+		// args[1] = args[1] + "/part-randomSeed";
 		// args[2] = "output";
+		// centers = args[1];
 		run(args);
+		// centers = args[1];
 	}
 	
 	public static void run(String[] args) throws IOException{
-		
-		centers = new Path(args[1]);
 		
 		for (int i = 0; i < iterNum; i++){
 			JobConf conf = new JobConf(KMeans.class);
@@ -59,12 +59,16 @@ public class KMeans {
 			conf.setPartitionerClass(HashPartitioner.class);
 			conf.setReducerClass(KMeansReducer.class);
 				
+			conf.setNumMapTasks(10);
+			conf.setNumReduceTasks(2);
+			
 			conf.setInputFormat(SequenceFileInputFormat.class);
 			conf.setOutputFormat(SequenceFileOutputFormat.class);
 				
 			FileInputFormat.setInputPaths(conf, new Path(args[0]));
 			FileOutputFormat.setOutputPath(conf, new Path(args[2]));
 				
+			// centers = args[1];
 			JobClient.runJob(conf);
 		}
 	}

@@ -49,10 +49,11 @@ public class KMeansMapper extends MapReduceBase implements Mapper<LongWritable, 
 		
 	}
 	
-	public double[][] getCenters(Path path) throws IOException{
+	public double[][] getCenters(String filename) throws IOException{
 		double [][] centers = new double[KMeans.k][KMeans.d];
 		Configuration conf = new Configuration();
 		FileSystem fs = FileSystem.get(conf);
+		Path path = new Path(filename);
 		SequenceFile.Reader reader = new SequenceFile.Reader(fs, path, conf);
 		Text key = new Text();
 	    ClusterWritable val = new ClusterWritable();
