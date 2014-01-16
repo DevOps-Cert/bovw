@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import org.apache.commons.io.FileUtils;
 
 public class TopDownPipeline {
+	
 	private static String dm = "org.apache.mahout.common.distance.CosineDistanceMeasure";
 	private static double delta = 0.001;
 	private static int x = 100;
@@ -16,7 +17,7 @@ public class TopDownPipeline {
 	private static int botK = 0;
 	
 	public static void main(String[] args) throws IOException{
-		// run(args);
+		run(args);
 	}
 	
 	public static void run(String[] args) throws IOException{
