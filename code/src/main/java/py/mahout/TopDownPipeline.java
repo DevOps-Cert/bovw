@@ -35,8 +35,8 @@ public class TopDownPipeline {
 		String res = args[7];
 		
 		topLevel(input, cls, top, topK);
-		midLevel(top, mid);
-		botLevel(mid, bot, botK, res);
+		//midLevel(top, mid);
+		//botLevel(mid, bot, botK, res);
 	}
 	
 	public static void topLevel(String input, String cls, String top, int topK) throws IOException{
@@ -44,7 +44,7 @@ public class TopDownPipeline {
 	}
 	
 	public static void midLevel(String top, String mid) throws IOException{
-		String command = "clusterpp -i " + top + " -o " + mid;
+		String command = "mahout clusterpp -i " + top + " -o " + mid;
 		System.out.println(command);
 		run(command);
 	}
@@ -52,6 +52,7 @@ public class TopDownPipeline {
 	public static void botLevel(String mid, String bot, int botK, String res) throws IOException{
 		File folder = new File(mid);
 		File[] list = folder.listFiles();
+		//TODO: rewrite here to add hadoop fs results
 		for(int i = 0; i < list.length; i++){
 			// System.out.println(list[i].getName());
 			File file = list[i];
@@ -61,7 +62,7 @@ public class TopDownPipeline {
 	}
 	
 	public static void kmeans(String input, String clusters, String output, int k, double cd, int x) throws IOException{
-		String command = "mahout kmeans - i " + input + " -c " +  clusters + " -o " + output + " -k " + k + " "
+		String command = "mahout kmeans -i " + input + " -c " + clusters + " -o " + output + " -k " + k + " "
 				+ "-dm " + dm + " -cd " + cd + " -x " + x + " -ow -cl" ;
 		System.out.println(command);
 		run(command);
@@ -71,6 +72,7 @@ public class TopDownPipeline {
 		File src = new File(cs);
 		File dst = new File(res);
 		FileUtils.copyDirectory(src, dst);
+		//TODO: probably need to rewritten by using hadoop fs commands
 	}
 	
 	public static void run(String command) throws IOException{
