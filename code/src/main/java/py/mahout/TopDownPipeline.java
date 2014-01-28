@@ -8,7 +8,7 @@ import java.util.Date;
 public class TopDownPipeline {
 	
 	private static String dm = "org.apache.mahout.common.distance.CosineDistanceMeasure";
-	private static double delta = 0.1;
+	private static double delta = 0.001;
 	private static int x = 100;
 	
 	private static int topK = 0;
@@ -19,6 +19,8 @@ public class TopDownPipeline {
 	}
 	
 	public static void run(String[] args) throws IOException, InterruptedException{
+		
+		long ts0 = new Date().getTime();
 		
 		// parse parameters
 		String data = args[0];
@@ -34,9 +36,12 @@ public class TopDownPipeline {
 		clean(prefix);
 		topLevelProcess(data, top + "/cls", top, topK);
 		midLevelProcess(top, mid);
+		// TODO: implement parallel bottom level clustering
 		botLevelProcess(mid, bot, botK, res);
 		
-		log("top-down clustering pipeline ends");
+		long ts1 = new Date().getTime();
+		
+		log("top-down clustering pipeline ends with total process time: " + (double)(ts1 - ts0) / (60 * 1000) + " min");
 	}
 	
 	public static void clean(String prefix) throws IOException, InterruptedException{
@@ -58,9 +63,16 @@ public class TopDownPipeline {
 		String[] folders = getFolders(mid);
 		String cmd = "hadoop fs -mkdir " + res;
 		run(cmd);
+		
+		Thread[] ts = new Thread[botK];
+		
 		for(int i = 0; i < folders.length; i++){
-			kmeans(folders[i] + "/part-m-0", bot + "/" + i + "/cls", bot + "/" + i, botK, delta, x);
-			copyResults(bot + "/" + i + "/clusters-*-final/*", res + "/" + i);
+			ts[i] = parrelBotProcess(folders[i] + "/part-m-0", bot + "/" + i + "/cls", bot + "/" + i, botK, delta, x, 
+					bot + "/" + i + "/clusters-*-final/*", res + "/" + i, i);		
+		}
+		
+		for(int i = 0; i < ts.length; i++){
+			ts[i].join();
 		}
 	}
 	
@@ -94,6 +106,19 @@ public class TopDownPipeline {
 		run(command);
 	}
 	
+	public static Thread parrelBotProcess(String input, String clusters, String output, int k, double cd, int x, String src, String dst, int num) throws IOException, InterruptedException{
+		
+		String cmd0 = "mahout kmeans -i " + input + " -c " + clusters + " -o " + output + " -k " + k + " "
+				+ "-dm " + dm + " -cd " + cd + " -x " + x + " -ow -cl -xm sequential";
+		String cmd1 = "hadoop fs -mkdir " + dst;
+		String cmd2 = "hadoop fs -cp " + src + " " + dst;
+		//String cmd = cmd0 + "\n\r" + cmd1 + "\n\r" + cmd2;
+		
+		Thread t = new Thread(new BotThread(cmd0, cmd1, cmd2, num));
+		t.start();
+		return t;
+	}
+	
 	public static void copyResults(String cs, String res) throws IOException, InterruptedException{
 		String cmd0 = "hadoop fs -mkdir " + res;
 		run(cmd0);
@@ -112,13 +137,6 @@ public class TopDownPipeline {
 	public static void run(String command) throws IOException, InterruptedException{
 		Runtime rt = Runtime.getRuntime();
 		Process p = rt.exec(command);
-		// output the results
-		// String line;
-		// BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()) );
-	    // while ((line = in.readLine()) != null) {
-	    // // 	System.out.println(line);
-	    //}
-	    //in.close();
 	    p.waitFor();
 	}
 }
