@@ -109,7 +109,9 @@ public class TopDownPipeline {
 	public static Thread parrelBotProcess(String input, String clusters, String output, int k, double cd, int x, String src, String dst, int num) throws IOException, InterruptedException{
 		
 		String cmd0 = "mahout kmeans -i " + input + " -c " + clusters + " -o " + output + " -k " + k + " "
-				+ "-dm " + dm + " -cd " + cd + " -x " + x + " -ow -cl -xm sequential";
+				+ "-dm " + dm + " -cd " + cd + " -x " + x + " -ow -cl";
+		//String cmd0 = "mahout kmeans -i " + input + " -c " + clusters + " -o " + output + " -k " + k + " "
+		//		+ "-dm " + dm + " -cd " + cd + " -x " + x + " -ow -cl -xm sequential";
 		String cmd1 = "hadoop fs -mkdir " + dst;
 		String cmd2 = "hadoop fs -cp " + src + " " + dst;
 		//String cmd = cmd0 + "\n\r" + cmd1 + "\n\r" + cmd2;
