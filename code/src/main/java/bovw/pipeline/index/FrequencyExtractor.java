@@ -112,7 +112,7 @@ public class FrequencyExtractor {
 				}	
 			}
 			
-			output.collect(new Text(file), new Text(num + " " + result));
+			output.collect(new Text(file), new Text(num + "\t" + result));
 			
 			System.out.println(file + " processed");
 		}
