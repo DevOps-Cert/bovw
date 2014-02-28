@@ -1,6 +1,7 @@
 package bovw.pipeline.feature;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_features2d.DescriptorExtractor;
@@ -22,7 +23,9 @@ public class SIFTExtractor {
 		
 	}
 	
-	public static void extract(String imageName, String outfile){
+	public static String[] extract(String imageName){
+		
+		ArrayList<String> list = new ArrayList<String>();
 		
 		File file = new File(imageName);
 		CvMat image = com.googlecode.javacv.cpp.opencv_highgui.cvLoadImageM(file.getAbsolutePath(), com.googlecode.javacv.cpp.opencv_highgui.CV_LOAD_IMAGE_GRAYSCALE);
@@ -33,16 +36,23 @@ public class SIFTExtractor {
 		des.compute(image, keyPoints, cv_mat);
 		
 	    for(int i = 0;  i < cv_mat.rows(); i++){
-	    	double[] row = new double[cv_mat.cols()];
-	    	for(int j = 0; j < cv_mat.cols(); j++)
-	    		row[j] = cv_mat.get(i, j);
-	      	
 	    	// output some information to see whether the results are correct
-	    	System.out.println(points[i].position() + " " + points[i].pt() + " " + points[i].response() + " " + points[i].angle() + " " + points[i].size() + " ");
+	    	//System.out.println(points[i].position() + " " + points[i].pt() + " " + points[i].response() + " " + points[i].angle() + " " + points[i].size() + " ");
 	    	Paras paras = getSIFTParameters(points[i]);
-	    	System.out.println((paras.octave + 1) + " " + paras.layer + " " + paras.scale * 0.5f + " " + paras.radius  + " ");      
+	    	//System.out.println((paras.octave + 1) + " " + paras.layer + " " + paras.scale * 0.5f + " " + paras.radius  + " ");
+	    	String s = points[i].position() + " " + points[i].pt() + " " + points[i].response() + " " + points[i].angle() + " " 
+	    			+ points[i].size() + " " + (paras.octave + 1) + " " + paras.layer + " " + paras.scale * 0.5f + " " + paras.radius;
+	    	
+	    	double[] row = new double[cv_mat.cols()];
+	    	for(int j = 0; j < cv_mat.cols(); j++){
+	    		row[j] = cv_mat.get(i, j);
+	    		s = s + " " + row[j];
+	    	} 	
+	    	
+	    	list.add(s);
 	    }
 	    
+	    return list.toArray(new String[list.size()]);
 	}
 	
 	public static Paras getSIFTParameters(KeyPoint point){

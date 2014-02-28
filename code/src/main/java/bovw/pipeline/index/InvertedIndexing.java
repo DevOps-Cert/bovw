@@ -1,7 +1,9 @@
 package bovw.pipeline.index;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 
+import bovw.pipeline.feature.SIFTExtractor;
+
 /**
  * @author Yang Peng
  * @library: different libraries need to be loaded from other programs
@@ -24,7 +28,11 @@ public class InvertedIndexing {
 	public static void main(String[] args) throws SolrServerException, IOException{
 		//testSolr();
 		index("bw/part-00000");
-		query("");
+		//String q = transform("/home/hadoop/bovw/code/resources/oxbuild_images/" + "all_souls_000001.jpg");
+		String q = transform("/home/hadoop/Desktop/test.png");
+		//String q = "1";
+		query(q);
+		
 	}
 	
 	public static void index(String filename) throws IOException, SolrServerException{//indexing existing index matrix
@@ -61,12 +69,44 @@ public class InvertedIndexing {
 		// index a numeric vector as a string
 		String s = line.split("\t")[2];
 		doc.addField("text", s);
+		//String[] array = s.split(" ");
+		//for(String c : array){
+		//	doc.addField("*_is", Integer.parseInt(c));
+		//}
 		return doc;
 	}
 	
 	
-	public static void transform(String image){//transform an image into a Solr document or a field
+	public static String transform(String image) throws IOException{//transform an image into a Solr document or a field
+		int cnum = 900;
+		int fd = 128;
+		String[] features = SIFTExtractor.extract(image);
+		System.out.println("query: " + image);
+		double[][] clusters = FrequencyExtractor.FEMap.readClusters("/home/hadoop/Desktop/clusters.txt");
+		boolean[] marks = new boolean[cnum];
 		
+		for(int i = 0; i < features.length; i++){
+			double[] feature = new double[fd];
+			String[] args = features[i].split(" ");
+			for (int j = 0; j < fd; j++)
+				feature[j] = Double.parseDouble(args[j + 10]);
+			int index = FrequencyExtractor.FEMap.findBestCluster(feature, clusters);
+			//if(index != -1)
+			marks[index] = true;
+			//if(index == -1){
+			//	System.out.println(feature);
+			//}
+		}
+		
+		String result = "";
+		for(int i = 0; i < cnum; i++){
+			if(marks[i]){
+				if(result.length() == 0) result += i;
+				else result += " " + i;
+			}	
+		}
+		
+		return result;
 	}
 	
 	public static void query(String s) throws SolrServerException{//query and output results
@@ -75,7 +115,8 @@ public class InvertedIndexing {
 		HttpSolrServer server = new HttpSolrServer(urlString);
 		// search
 	    SolrQuery query = new SolrQuery();
-	    query.setQuery("33 38 24 25 30");
+	    query.setQuery(s);
+	    //query.setQuery("*_is:" + s);
 	    query.setFields("id");
 	    QueryResponse qresponse = server.query(query);
 	    // print results
