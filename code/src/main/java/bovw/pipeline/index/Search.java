@@ -13,7 +13,8 @@ public class Search {
 	public static String feature_folder = "/home/hadoop/bovw/code/resources/features_new";
 	
 	public static void main(String[] args) throws IOException, SolrServerException{
-		// evaluate the whole indexing and search system pipeline
+		
+		// evaluate the search system pipeline
 		evaluate("gt");
 	}
 	
@@ -46,9 +47,10 @@ public class Search {
 				double highY = Double.parseDouble(array[4]);
 				//System.out.println(line);
 				//System.out.println(query + " " + lowX + " " + lowY + " " + highX + " " + highY);
-				String[] features = getImageFeatures(queryImage, lowX, lowY, highX, highY);
+				String[] features = getImageFeatures(feature_folder + "/" + queryImage, lowX, lowY, highX, highY);
 				// search the image features
-				F1Score fs = search(features, folder + "/" + file);
+				System.out.println("query image " + queryImage);
+				F1Score fs = search(features, folder + "/" + file.substring(0, file.length() - "_query.txt".length()));
 				list.add(fs);
 			}
 		}
@@ -62,6 +64,10 @@ public class Search {
 			sumRecall += fs.recall;
 			sumF1 += fs.F1;
 		}
+		
+		System.out.println("sum precision = "+ sumPrecision);
+		System.out.println("sum recall = " + sumRecall);
+		System.out.println("sum F1 = " + sumF1);
 		
 		System.out.println("average precision = "+ sumPrecision / list.size());
 		System.out.println("average recall = " + sumRecall / list.size());

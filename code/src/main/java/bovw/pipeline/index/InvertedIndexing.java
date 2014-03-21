@@ -16,8 +16,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 
-import bovw.pipeline.feature.SIFTExtractor;
-
 /**
  * @author Yang Peng
  * @library: different libraries need to be loaded from other programs
@@ -107,14 +105,14 @@ public class InvertedIndexing {
 	    //query.setQuery(s);
 	    query.setFields("id");
 	    query.set("q", s);
-	    //query.set("tv", true);
-	    //query.set("qt", "tvrh");
-	    //query.set("tv", true);
-	    //query.set("tv.all", true);
-	    //query.set("tv.fl", "includes");
+	    query.set("tv", true);
+	    query.set("qt", "tvrh");
+	    query.set("tv", true);
+	    query.set("tv.all", true);
+	    query.set("tv.fl", "includes");
 	    //query.set("f.includes.tv.tf", true);
 	    //query.set("f.includes.tv.df", true);
-	    //query.set("f.includes.tv.tf_idf", true);
+	    query.set("f.includes.tv.tf_idf", true);
 	    //qt=tvrh&tv=true&tv.all=true&f.includes.tv.tf=false&tv.fl=includes
 	    
 	    		
@@ -135,15 +133,15 @@ public class InvertedIndexing {
 	
 	public static F1Score getF1Score(String[] files, String gt){
 		
-		HashSet<String> goodSet = getFiles("gt/" + gt + "_good.txt");
-		HashSet<String> okSet = getFiles("gt/" + gt + "_ok.txt");
-		HashSet<String> junkSet = getFiles("gt/" + gt + "_junk.txt");
+		HashSet<String> goodSet = getFiles(gt + "_good.txt");
+		HashSet<String> okSet = getFiles(gt + "_ok.txt");
+		//HashSet<String> junkSet = getFiles(gt + "_junk.txt");
 		
 		//int totalNum = goodSet.size() + okSet.size() + junkSet.size();
 		int totalNum = goodSet.size() + okSet.size();
 		int goodNum = getMatches(files, goodSet);
 		int okNum = getMatches(files, okSet);
-		int junkNum = getMatches(files, junkSet);
+		//int junkNum = getMatches(files, junkSet);
 		
 		//double precision = (double)(goodNum + okNum + junkNum) / files.length;
 		//double recall = (double)(goodNum + okNum + junkNum) / totalNum;
@@ -189,7 +187,7 @@ class F1Score {
 	double recall;
 	double F1;
 	F1Score(double pre, double re){
-		pre = precision;
+		precision = pre;
 		recall = re;
 		F1 = 2 * (precision * recall) / (precision + recall);
 	}
