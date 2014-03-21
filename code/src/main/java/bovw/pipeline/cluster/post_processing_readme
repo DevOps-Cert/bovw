@@ -1,0 +1,2 @@
+(1) hadoop fs -cp copy the results to a destined path, e.g. clusters/
+(2) mahout clusterdump to transform files into one text file to local position

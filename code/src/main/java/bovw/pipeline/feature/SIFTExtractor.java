@@ -43,13 +43,16 @@ public class SIFTExtractor {
 	    	String s = points[i].position() + " " + points[i].pt() + " " + points[i].response() + " " + points[i].angle() + " " 
 	    			+ points[i].size() + " " + (paras.octave + 1) + " " + paras.layer + " " + paras.scale * 0.5f + " " + paras.radius;
 	    	
-	    	double[] row = new double[cv_mat.cols()];
-	    	for(int j = 0; j < cv_mat.cols(); j++){
-	    		row[j] = cv_mat.get(i, j);
-	    		s = s + " " + row[j];
-	    	} 	
-	    	
+	    	int scale = paras.octave + 1; // filtering by scale information
+	    	//System.out.println(scale);
+	    	if(scale > 1){ // filter out smaller scales
+	    		double[] row = new double[cv_mat.cols()];
+	    		for(int j = 0; j < cv_mat.cols(); j++){
+	    			row[j] = cv_mat.get(i, j);
+	    			s = s + " " + row[j];
+	    		} 	
 	    	list.add(s);
+	    	}
 	    }
 	    
 	    return list.toArray(new String[list.size()]);
@@ -75,6 +78,7 @@ public class SIFTExtractor {
 	    
 	    return new Paras(octave, layer, scale, radius); 
 	}
+	
 	
 	private static class Paras{
 		   int octave;

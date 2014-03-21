@@ -31,7 +31,7 @@ public class FrequencyExtractor {
 	//output: a file containing both the name of file and the cluster ids
 	
 	//public static String clusters = "data/clusters.txt";// the path directed to the clusters
-	public static String clusters = "/home/hadoop/Desktop/clusters.txt";
+	public static String clusters = "data/clusters.txt";
 	public static String features = "/home/hadoop/bovw/code/resources/features_new/";
 	public static int size = 128;
 	public static int cnum = 900;
@@ -82,7 +82,7 @@ public class FrequencyExtractor {
 		public void map(LongWritable key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
 			
 			double[][] cs = readClusters(clusters);//read clusters
-			boolean[] marks = new boolean[cnum];
+			int[] marks = new int[cnum];
 			// read the features and 
 			String file = value.toString();
 			
@@ -99,13 +99,13 @@ public class FrequencyExtractor {
 				for (int i = 0; i < size; i++)
 					feature[i] = Double.parseDouble(args[i + 10]);
 				int index = findBestCluster(feature, cs);
-				marks[index] = true;
+				marks[index]++;
 			}
 			
 			String result = "";
 			int num = 0;
 			for(int i = 0; i < cnum; i++){
-				if(marks[i]){
+				for(int j = 0; j < marks[i]; j++){
 					if(result.length() == 0) result += i;
 					else result += " " + i;
 					num++;

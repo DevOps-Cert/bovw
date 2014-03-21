@@ -1,0 +1,5 @@
+For ground truth:
+Good - A nice, clear picture of the object/building.
+OK - More than 25% of the object is clearly visible.
+Bad - The object is not present.
+Junk - Less than 25% of the object is visible, or there are very high levels of occlusion or distortion.

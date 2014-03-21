@@ -1,13 +1,13 @@
 package bovw.pipeline.index;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -26,12 +26,6 @@ import bovw.pipeline.feature.SIFTExtractor;
 public class InvertedIndexing {
 	
 	public static void main(String[] args) throws SolrServerException, IOException{
-		//testSolr();
-		index("bw/part-00000");
-		//String q = transform("/home/hadoop/bovw/code/resources/oxbuild_images/" + "all_souls_000001.jpg");
-		String q = transform("/home/hadoop/Desktop/test.png");
-		//String q = "1";
-		query(q);
 		
 	}
 	
@@ -68,22 +62,21 @@ public class InvertedIndexing {
 		// add the cluster fields
 		// index a numeric vector as a string
 		String s = line.split("\t")[2];
-		doc.addField("text", s);
-		//String[] array = s.split(" ");
-		//for(String c : array){
-		//	doc.addField("*_is", Integer.parseInt(c));
-		//}
+		// includes is for term vector
+		doc.addField("includes", s);
+		// doc.addField("features", s);
+		//doc.set
 		return doc;
 	}
 	
 	
-	public static String transform(String image) throws IOException{//transform an image into a Solr document or a field
+	public static String createQueryDoc(String image) throws IOException{//transform an image into a Solr document or a field
 		int cnum = 900;
 		int fd = 128;
 		String[] features = SIFTExtractor.extract(image);
 		System.out.println("query: " + image);
-		double[][] clusters = FrequencyExtractor.FEMap.readClusters("/home/hadoop/Desktop/clusters.txt");
-		boolean[] marks = new boolean[cnum];
+		double[][] clusters = FrequencyExtractor.FEMap.readClusters("data/clusters.txt");
+		int[] marks = new int[cnum];
 		
 		for(int i = 0; i < features.length; i++){
 			double[] feature = new double[fd];
@@ -92,7 +85,7 @@ public class InvertedIndexing {
 				feature[j] = Double.parseDouble(args[j + 10]);
 			int index = FrequencyExtractor.FEMap.findBestCluster(feature, clusters);
 			//if(index != -1)
-			marks[index] = true;
+			marks[index]++;
 			//if(index == -1){
 			//	System.out.println(feature);
 			//}
@@ -100,79 +93,97 @@ public class InvertedIndexing {
 		
 		String result = "";
 		for(int i = 0; i < cnum; i++){
-			if(marks[i]){
+			for(int j = 0; j < marks[i]; j++){
 				if(result.length() == 0) result += i;
 				else result += " " + i;
 			}	
 		}
-		
+		System.out.println("query string: " + result);
 		return result;
 	}
 	
-	public static void query(String s) throws SolrServerException{//query and output results
+	public static double query(String s) throws SolrServerException{//query and output results
 		//query a numeric vector as a string
 		String urlString = "http://localhost:8983/solr";
 		HttpSolrServer server = new HttpSolrServer(urlString);
 		// search
 	    SolrQuery query = new SolrQuery();
-	    query.setQuery(s);
-	    //query.setQuery("*_is:" + s);
+	    //query.setQuery(s);
 	    query.setFields("id");
+	    query.set("q", s);
+	    //query.set("tv", true);
+	    //query.set("qt", "tvrh");
+	    //query.set("tv", true);
+	    //query.set("tv.all", true);
+	    //query.set("tv.fl", "includes");
+	    //query.set("f.includes.tv.tf", true);
+	    //query.set("f.includes.tv.df", true);
+	    //query.set("f.includes.tv.tf_idf", true);
+	    //qt=tvrh&tv=true&tv.all=true&f.includes.tv.tf=false&tv.fl=includes
+	    
+	    		
 	    QueryResponse qresponse = server.query(query);
 	    // print results
 	    SolrDocumentList list = qresponse.getResults();
+	    String[] files = new String[list.size()];
 	    for(int i = 0; i < list.size(); i++){
-	    	System.out.println(list.get(i));
+	    	System.out.println(list.get(i).getFieldValue("id"));
+	    	files[i] = list.get(i).getFieldValue("id").toString();
 	    }
 	    System.out.println("query is done");
+	    System.out.println("query F1 score is " + getF1Score(files, "all_souls_1"));
+	    return getF1Score(files, "all_souls_1");
 	}
 	
 	
-	public static void testSolr() throws SolrServerException, IOException{
+	
+	public static double getF1Score(String[] files, String gt){
 		
-		// initialize the connection to server
-		String urlString = "http://localhost:8983/solr";
-		HttpSolrServer server = new HttpSolrServer(urlString);
-		//TODO: ConcurrentUpdateSolrServer
-		//server.setParser(new XMLResponseParser());
-		server.deleteByQuery( "*:*" );// CAUTION: deletes everything!
+		HashSet<String> goodSet = getFiles("gt/" + gt + "_good.txt");
+		HashSet<String> okSet = getFiles("gt/" + gt + "_ok.txt");
+		HashSet<String> junkSet = getFiles("gt/" + gt + "_junk.txt");
 		
-		// indexing
-		// create a new document
-	    SolrInputDocument doc0 = new SolrInputDocument();
-	    doc0.addField("id", "552199");
-	    doc0.addField("name", "Gouda cheese wheel");
-	    doc0.addField("price", "49.99");
-	    
-		SolrInputDocument doc1 = new SolrInputDocument();
-	    doc1.addField( "id", "id1", 1.0f );
-	    doc1.addField( "name", "doc1", 1.0f );
-	    doc1.addField( "price", 10 );
-	    doc1.addField("*_i", "10");
+		//int totalNum = goodSet.size() + okSet.size() + junkSet.size();
+		int totalNum = goodSet.size() + okSet.size();
+		int goodNum = getMatches(files, goodSet);
+		int okNum = getMatches(files, okSet);
+		int junkNum = getMatches(files, junkSet);
 		
-	    SolrInputDocument doc2 = new SolrInputDocument();
-	    doc2.addField( "id", "id2", 1.0f );
-	    doc2.addField( "name", "doc2", 1.0f );
-	    doc2.addField( "price", 20 );
-	    
-	    Collection<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
-	    docs.add(doc0);
-	    docs.add(doc1);
-	    docs.add(doc2);
-	    
-	    server.add(docs);
-	    server.commit();	    
-		
-	    // search
-	    SolrQuery parameters = new SolrQuery();
-	    String mQueryString = "552199";
-	    parameters.set("q", mQueryString);
-	    QueryResponse qresponse = server.query(parameters);
-	    // print results
-	    SolrDocumentList list = qresponse.getResults();
-	    for(int i = 0; i < list.size(); i++){
-	    	System.out.println(list.get(i));
-	    }
+		//double precision = (double)(goodNum + okNum + junkNum) / files.length;
+		//double recall = (double)(goodNum + okNum + junkNum) / totalNum;
+		double precision = (double)(goodNum + okNum) / files.length;
+		double recall = (double)(goodNum + okNum) / totalNum;
+		System.out.println("query precision is " + precision);
+		System.out.println("query recall is " + recall);
+		return 2 * (precision * recall) / (precision + recall);
+	}
+	
+	public static int getMatches(String[] files, HashSet<String> set){
+		int num = 0;
+		for(String s : files){
+			if (set.contains(s)) num++;
+		}
+		return num;
+	}
+	
+	public static HashSet<String> getFiles(String filename){
+		HashSet<String> set = new HashSet<String>();
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(filename));
+			String line;
+			while((line = reader.readLine()) != null){
+				set.add(line + ".jpg.txt");
+			}
+			reader.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return set;
 	}
 	
 }
