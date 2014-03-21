@@ -25,10 +25,6 @@ import bovw.pipeline.feature.SIFTExtractor;
 
 public class InvertedIndexing {
 	
-	public static void main(String[] args) throws SolrServerException, IOException{
-		
-	}
-	
 	public static void index(String filename) throws IOException, SolrServerException{//indexing existing index matrix
 		
 		String urlString = "http://localhost:8983/solr";
@@ -70,11 +66,11 @@ public class InvertedIndexing {
 	}
 	
 	
-	public static String createQueryDoc(String image) throws IOException{//transform an image into a Solr document or a field
+	public static String createQueryDoc(String[] features) throws IOException{//transform an image into a Solr document or a field
 		int cnum = 900;
 		int fd = 128;
-		String[] features = SIFTExtractor.extract(image);
-		System.out.println("query: " + image);
+		//String[] features = SIFTExtractor.extract(image);
+		//System.out.println("query: " + image);
 		double[][] clusters = FrequencyExtractor.FEMap.readClusters("data/clusters.txt");
 		int[] marks = new int[cnum];
 		
@@ -102,7 +98,7 @@ public class InvertedIndexing {
 		return result;
 	}
 	
-	public static double query(String s) throws SolrServerException{//query and output results
+	public static F1Score query(String s, String gt) throws SolrServerException{//query and output results
 		//query a numeric vector as a string
 		String urlString = "http://localhost:8983/solr";
 		HttpSolrServer server = new HttpSolrServer(urlString);
@@ -130,14 +126,14 @@ public class InvertedIndexing {
 	    	System.out.println(list.get(i).getFieldValue("id"));
 	    	files[i] = list.get(i).getFieldValue("id").toString();
 	    }
-	    System.out.println("query is done");
-	    System.out.println("query F1 score is " + getF1Score(files, "all_souls_1"));
-	    return getF1Score(files, "all_souls_1");
+	    //System.out.println("query is done");
+	    //System.out.println("query F1 score is " + getF1Score(files, "all_souls_1"));
+	    return getF1Score(files, gt);
 	}
 	
 	
 	
-	public static double getF1Score(String[] files, String gt){
+	public static F1Score getF1Score(String[] files, String gt){
 		
 		HashSet<String> goodSet = getFiles("gt/" + gt + "_good.txt");
 		HashSet<String> okSet = getFiles("gt/" + gt + "_ok.txt");
@@ -155,7 +151,7 @@ public class InvertedIndexing {
 		double recall = (double)(goodNum + okNum) / totalNum;
 		System.out.println("query precision is " + precision);
 		System.out.println("query recall is " + recall);
-		return 2 * (precision * recall) / (precision + recall);
+		return new F1Score(precision, recall);
 	}
 	
 	public static int getMatches(String[] files, HashSet<String> set){
@@ -186,6 +182,17 @@ public class InvertedIndexing {
 		return set;
 	}
 	
+}
+
+class F1Score {
+	double precision;
+	double recall;
+	double F1;
+	F1Score(double pre, double re){
+		pre = precision;
+		recall = re;
+		F1 = 2 * (precision * recall) / (precision + recall);
+	}
 }
 
 
