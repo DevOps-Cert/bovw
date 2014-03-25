@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
@@ -56,15 +55,14 @@ public class InvertedIndexing {
 		// add the cluster fields
 		// index a numeric vector as a string
 		String s = line.split("\t")[2];
-		// includes is for term vector
+		// includes field = term vector
 		doc.addField("includes", s);
-		// doc.addField("features", s);
 		//doc.set
 		return doc;
 	}
 	
 	
-	public static String createQueryDoc(String[] features) throws IOException{//transform an image into a Solr document or a field
+	public static String createQuery(String[] features) throws IOException{//transform an image into a Solr document or a field
 		int cnum = 900;
 		int fd = 128;
 		//String[] features = SIFTExtractor.extract(image);
@@ -92,40 +90,32 @@ public class InvertedIndexing {
 				else result += " " + i;
 			}	
 		}
-		System.out.println("query string: " + result);
+		//System.out.println("query string: " + result);
 		return result;
 	}
 	
+	
 	public static F1Score query(String s, String gt) throws SolrServerException{//query and output results
+		//TODO: figure out the term vector representation of document
+		//TODO: figure out how tf-idf works
+		//TODO: figure out how the inverted indexing works
+		
 		//query a numeric vector as a string
 		String urlString = "http://localhost:8983/solr";
 		HttpSolrServer server = new HttpSolrServer(urlString);
 		// search
 	    SolrQuery query = new SolrQuery();
-	    //query.setQuery(s);
-	    query.setFields("id");
-	    query.set("q", s);
-	    query.set("tv", true);
-	    query.set("qt", "tvrh");
-	    query.set("tv", true);
-	    query.set("tv.all", true);
-	    query.set("tv.fl", "includes");
-	    //query.set("f.includes.tv.tf", true);
-	    //query.set("f.includes.tv.df", true);
-	    query.set("f.includes.tv.tf_idf", true);
-	    //qt=tvrh&tv=true&tv.all=true&f.includes.tv.tf=false&tv.fl=includes
+	    //query.setQuery("includes:" + s);
+	    query.set("q", "includes:" + s);
 	    
-	    		
+	    // get results		
 	    QueryResponse qresponse = server.query(query);
-	    // print results
 	    SolrDocumentList list = qresponse.getResults();
 	    String[] files = new String[list.size()];
 	    for(int i = 0; i < list.size(); i++){
 	    	System.out.println(list.get(i).getFieldValue("id"));
 	    	files[i] = list.get(i).getFieldValue("id").toString();
 	    }
-	    //System.out.println("query is done");
-	    //System.out.println("query F1 score is " + getF1Score(files, "all_souls_1"));
 	    return getF1Score(files, gt);
 	}
 	

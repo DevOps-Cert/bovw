@@ -13,7 +13,10 @@ public class Search {
 	public static String feature_folder = "/home/hadoop/bovw/code/resources/features_new";
 	
 	public static void main(String[] args) throws IOException, SolrServerException{
-		
+		// transform files of features into files of cluster ids
+		//FrequencyExtractor.run("data/fnames.txt", "bw1");
+		// index the cluster ids files
+		InvertedIndexing.index("bw/part-00000");
 		// evaluate the search system pipeline
 		evaluate("gt");
 	}
@@ -21,7 +24,7 @@ public class Search {
 	public static F1Score search(String[] features, String gt) throws IOException, SolrServerException{
 
 		// get query from a set of images and measure the mean F1 score
-		String query = InvertedIndexing.createQueryDoc(features);
+		String query = InvertedIndexing.createQuery(features);
 		// run query
 		return InvertedIndexing.query(query, gt);
 	}
