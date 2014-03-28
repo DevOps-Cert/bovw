@@ -23,6 +23,7 @@ import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
 import bovw.pipeline.index.FrequencyExtractor;
+import bovw.pipeline.util.HadoopUtil;
 
 public class FeatureExtractor {
 	
@@ -33,7 +34,8 @@ public class FeatureExtractor {
 		// get the image names for future feature extraction
 		//getNames(img_folder, "data/inames.txt");
 		// run Map-Reduce job for Feature Extraction
-		runMapReduce("data/inames.txt", "features");
+		runFeatureExtractionMR("data/inames.txt", "features");
+		
 	}
 	
 	public static void getNames(String img_folder, String file) throws FileNotFoundException{
@@ -46,9 +48,10 @@ public class FeatureExtractor {
 		pw.close();
 	}
 
-	public static void runMapReduce(String infile, String outfile) throws IOException{
+	public static void runFeatureExtractionMR(String infile, String outfile) throws IOException{
 		
-
+		HadoopUtil.delete(outfile);
+		
 		JobConf conf = new JobConf(FrequencyExtractor.class);
 		conf.setJobName("FeatureExtractor");
 		
@@ -66,6 +69,8 @@ public class FeatureExtractor {
 		FileOutputFormat.setOutputPath(conf, new Path(outfile));
 		
 		JobClient.runJob(conf);
+		
+		System.out.println("feature extraction is done");
 	}
 	
 	public static class FEMap extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text> {
@@ -80,10 +85,11 @@ public class FeatureExtractor {
 			// store them into a file
 			store(features, feature_folder + "/" + value.toString() + ".txt");
 			
-			System.out.println(file + " processed");
+			//System.out.println(file + " processed");
 		}
 		
 		public void store(String[] features, String filename){
+			if(features == null) return;			
 			try {
 				Configuration conf = new Configuration();
 				FileSystem fs;
@@ -92,8 +98,10 @@ public class FeatureExtractor {
 				FSDataOutputStream out = fs.create(outFile);
 				PrintWriter pw = new PrintWriter(out.getWrappedStream());
 				for(String feature : features){
-					pw.println(feature + "\n");
+					pw.println(feature);
+					pw.flush();
 				}
+				pw.close();
 				out.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

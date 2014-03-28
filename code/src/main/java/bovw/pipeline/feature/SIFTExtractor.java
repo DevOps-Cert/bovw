@@ -35,6 +35,8 @@ public class SIFTExtractor {
 		CvMat cv_mat = new CvMat(null);
 		des.compute(image, keyPoints, cv_mat);
 		
+		if(cv_mat.isNull()) return null;
+		
 	    for(int i = 0;  i < cv_mat.rows(); i++){
 	    	// output some information to see whether the results are correct
 	    	//System.out.println(points[i].position() + " " + points[i].pt() + " " + points[i].response() + " " + points[i].angle() + " " + points[i].size() + " ");
