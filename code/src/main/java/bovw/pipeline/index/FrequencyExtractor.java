@@ -24,6 +24,8 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
+import bovw.pipeline.util.HadoopUtil;
+
 
 public class FrequencyExtractor {
 	//TODO: a map/reduce job
@@ -39,6 +41,8 @@ public class FrequencyExtractor {
 	public static void main(String[] args) throws IOException{
 		//getNames("/home/hadoop/bovw/code/resources/features_new", "data/fnames.txt");
 		run("data/fnames.txt", "bw");
+		HadoopUtil.copyMerge("bw", "data/tf.txt");
+		HadoopUtil.delete("bw");
 		//readClusters("/home/hadoop/Desktop/clusters.txt");
 	}
 	
