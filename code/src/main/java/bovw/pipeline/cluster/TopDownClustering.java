@@ -37,7 +37,7 @@ public class TopDownClustering {
 		topLevelProcess(data, top + "/cls", top, topK);
 		midLevelProcess(top, mid);
 		// parallel bottom level clustering
-		botLevelProcess(mid, bot, botK, res);
+		botLevelProcess(mid, bot, topK, botK, res);
 		// merge the clusters into a single file
 		merge(res, prefix);
 		
@@ -60,12 +60,12 @@ public class TopDownClustering {
 		run(command);
 	}
 	
-	public static void botLevelProcess(String mid, String bot, int botK, String res) throws IOException, InterruptedException{
+	public static void botLevelProcess(String mid, String bot, int topK, int botK, String res) throws IOException, InterruptedException{
 		String[] folders = getFolders(mid);
 		String cmd = "hadoop fs -mkdir " + res;
 		run(cmd);
 		
-		Thread[] ts = new Thread[botK];
+		Thread[] ts = new Thread[topK];
 		
 		for(int i = 0; i < folders.length; i++){
 			ts[i] = parrelBotProcess(folders[i] + "/part-m-0", bot + "/" + i + "/cls", bot + "/" + i, botK, delta, x, 
@@ -99,7 +99,7 @@ public class TopDownClustering {
 	
 	public static String[] getFolders(String mid) throws IOException, InterruptedException{
 		
-		String[] folders = new String[botK];
+		String[] folders = new String[topK];
 		int i = -1;
 		String cmd = "hadoop fs -ls " + mid;
 		log(cmd);
