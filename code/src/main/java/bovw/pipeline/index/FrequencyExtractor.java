@@ -28,30 +28,23 @@ import bovw.pipeline.util.HadoopUtil;
 
 
 public class FrequencyExtractor {
-	//TODO: a map/reduce job
 	//input: clusters.txt, feature txts
 	//output: a file containing both the name of file and the cluster ids
 	
-	//public static String clusters = "data/clusters.txt";// the path directed to the clusters
-	public static String clusters = "data/clusters.txt";
-	public static String features = "/home/hadoop/bovw/code/resources/features_new/";
-	public static int size = 128;
-	public static int cnum = 900;
-	
 	public static void main(String[] args) throws IOException{
 		//getNames("/home/hadoop/bovw/code/resources/features_new", "data/fnames.txt");
-		run("data/fnames.txt", "bw");
-		HadoopUtil.copyMerge("bw", "data/tf.txt");
+		//clusters = args[0];
+		String data = "data/tf.txt";
 		HadoopUtil.delete("bw");
+		run(Search.fnames, "bw");
+		HadoopUtil.copyMerge("bw", data);
 		//readClusters("/home/hadoop/Desktop/clusters.txt");
 	}
 	
 	public static void getNames(String features, String file) throws FileNotFoundException{
 		File folder = new File(features);
 		String[] list = folder.list();
-		
 		PrintWriter pw = new PrintWriter(file);
-		
 		for(int i = 0; i < list.length; i++){
 			pw.println(list[i]);
 		}
@@ -59,7 +52,6 @@ public class FrequencyExtractor {
 	}
 	
 	public static void run(String infile, String outfile) throws IOException{
-		
 
 		JobConf conf = new JobConf(FrequencyExtractor.class);
 		conf.setJobName("FrequencyExtractor");
@@ -85,12 +77,12 @@ public class FrequencyExtractor {
 		@Override
 		public void map(LongWritable key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
 			
-			double[][] cs = readClusters(clusters);//read clusters
-			int[] marks = new int[cnum];
+			double[][] cs = readClusters(Search.clusterFile);//read clusters
+			int[] marks = new int[Search.clusterNum];
 			// read the features and 
 			String file = value.toString();
 			
-			String data = features + file;
+			String data = Search.featureFolder + file;
 			//read the file line by line
 			Path dp = new Path(data);
 			Configuration conf = new Configuration();
@@ -98,9 +90,9 @@ public class FrequencyExtractor {
 			FSDataInputStream input = fs.open(dp);
 			String line;
 			while((line = input.readLine()) != null){
-				double[] feature = new double[size];
+				double[] feature = new double[Search.featureSize];
 				String[] args = line.split(" ");
-				for (int i = 0; i < size; i++)
+				for (int i = 0; i < Search.featureSize; i++)
 					feature[i] = Double.parseDouble(args[i + 10]);
 				int index = findBestCluster(feature, cs);
 				marks[index]++;
@@ -108,7 +100,7 @@ public class FrequencyExtractor {
 			
 			String result = "";
 			int num = 0;
-			for(int i = 0; i < cnum; i++){
+			for(int i = 0; i < Search.clusterNum; i++){
 				for(int j = 0; j < marks[i]; j++){
 					if(result.length() == 0) result += i;
 					else result += " " + i;
@@ -127,14 +119,14 @@ public class FrequencyExtractor {
 			FileSystem fs = FileSystem.get(conf);
 			Path path = new Path(clusters);
 			FSDataInputStream input = fs.open(path);
-			double[][] cs = new double[cnum][size];
+			double[][] cs = new double[Search.clusterNum][Search.featureSize];
 			String line;
-			for(int i = 0; i < cnum; i ++){
+			for(int i = 0; i < Search.clusterNum; i ++){
 				line = input.readLine();
 				//System.out.println(line);
 				String center = line.split("\\]")[0].split("c=\\[")[1];
 				String[] array = center.split(", ");
-				for(int j = 0; j < size; j++)
+				for(int j = 0; j < Search.featureSize; j++)
 					cs[i][j] = Double.parseDouble(array[j]);
 			}
 			
@@ -144,7 +136,7 @@ public class FrequencyExtractor {
 		public static int findBestCluster(double[] feature, double[][] clusters){
 			int index = -1;
 			double distance = -1.1;
-			feature = norm(feature);
+			//feature = norm(feature);
 			for(int i = 0; i < clusters.length; i++){
 				
 				double fl = 0;
